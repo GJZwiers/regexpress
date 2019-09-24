@@ -1,1 +1,1 @@
-# RegExpress
+RegExpress is a JavaScript library for writing extensive regex patterns in a more organised and maintanable way. Long patterns can be structured in user-defined components and arrange them using a template string.
