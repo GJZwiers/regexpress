@@ -1,4 +1,5 @@
-interface RegexSettings{
+interface RegexSettings
+{
     template: string,
     flags: string
 }
