@@ -1,0 +1,4 @@
+/node_modules
+RegexBuilder.php
+RegexBuilderTest.php
+.gitignore

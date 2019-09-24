@@ -1,0 +1,26 @@
+{
+  "name": "regexpress",
+  "version": "1.0.0",
+  "description": "RegExpress is a JavaScript library for writing extensive regex patterns in a more organised and maintainable way. Large patterns can be structured in user-defined components and arrange them using a template string. It has functionality somewhat similar to named capturing groups in other regex flavours.",
+  "main": "RegexBuilder.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GJZwiers/RegExpress.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GJZwiers/RegExpress/issues"
+  },
+  "homepage": "https://github.com/GJZwiers/RegExpress#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "jest": "^24.9.0",
+    "ts-jest": "^24.1.0",
+    "typescript": "^3.6.3"
+  }
+}
