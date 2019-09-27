@@ -15,7 +15,7 @@ interface PlaceholderSubstitutes
     [key: string]: any
 }
 
-class RegexBuilder
+export class RegexBuilder
 {
     private _regexData: RegexData;
     private _placeholderSubstitutes: PlaceholderSubstitutes;
@@ -34,23 +34,30 @@ class RegexBuilder
 
         this._buildValues();
 
-        const regex = new RegExp(this._buildTemplate() , this._regexData.settings.flags);
+        return new RegExp(this._buildTemplate() , this._regexData.settings.flags);
     }
 
     private _buildValues(){
-        this._regexData.forEach((group: any, key: string) => {
-            if (!Array.isArray(group))
+        for (let key in this._regexData){
+            if (!Array.isArray(this._regexData[key]))
                 return;
+        
+            this._regexData[key] = this._joinArrayWithPipeSymbols(this._regexData[key]);
+        }
+
+        // this._regexData.forEach((group: any, key: string) => {
+        //     if (!Array.isArray(group))
+        //         return;
             
-            this._regexData[key] = this._joinArrayWithPipeSymbols(group);
-        });
+        //     this._regexData[key] = this._joinArrayWithPipeSymbols(group);
+        // });
     }
 
-    private _joinArrayWithPipeSymbols(arr: Array<string>){
+    private _joinArrayWithPipeSymbols(arr: Array<string>) : string {
         return arr.join('|');
     }
 
-    private _buildTemplate(){
+    private _buildTemplate() : string {
         if (!this._placeholderSubstitutes)
             return this._substituteTemplateVariables(this._regexData.settings.template);
 
@@ -73,9 +80,14 @@ class RegexBuilder
     }
 
     private _substitutePlaceholders(regexString: string) : string {
-        this._placeholderSubstitutes.forEach((substitute: Array<string>, placeholder: string) => {
+
+        for (let placeholder in this._placeholderSubstitutes) {
+            let substitute = this._placeholderSubstitutes[placeholder];
             regexString = regexString.replace(`~~${placeholder}~~`, substitute.join('|'));
-        });
+        }
+        // this._placeholderSubstitutes.forEach((substitute: Array<string>, placeholder: string) => {
+        //     regexString = regexString.replace(`~~${placeholder}~~`, substitute.join('|'));
+        // });
 
         return regexString;
     }
