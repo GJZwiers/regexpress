@@ -5,17 +5,40 @@ const mockRegexData = {
         template: '(values)',
         flags: ''
     },
-    values: ['1', '2']
-}
+    values: [
+        '1',
+        '2'
+    ]
+};
+
+const mockRegexDataWithSubs = {
+    settings: {
+        template: '(values)',
+        flags: ''
+    },
+    values: [
+        '~~test_placeholder~~',
+        '1',
+        '2'
+    ]
+};
 
 const mockPlaceholderSubs = {
-    "testPlaceholder": [
-        "testVal",
-        "testVal2"
+    test_placeholder: [
+        "sub1",
+        "sub2"
     ]
-}
+};
 
-test('sample test', () => {
-    let rb = new RegexBuilder(mockRegexData, mockPlaceholderSubs);
-    expect(rb.buildRegex(mockRegexData)).toBe(/(1|2)/);
+
+test('Regexpress builds pattern correctly from json notation', () => {
+    let rb = new RegexBuilder(mockPlaceholderSubs);
+
+    expect(rb.buildRegex(mockRegexData)).toEqual(/(1|2)/);
+});
+
+test('RegExpress substitutes placeholder with corresponding group of substitutes', () => {
+    let rb = new RegexBuilder(mockPlaceholderSubs);
+
+    expect(rb.buildRegex(mockRegexDataWithSubs)).toEqual(/(sub1|sub2|1|2)/);
 });
