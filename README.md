@@ -61,7 +61,7 @@ Similarly, groups of regex lookeheads can be defined:
     ]
 }
 ```
-Regexpress allows you to use placeholders as well to use common values in multiple regex patterns, by using the "~~placeholder~~" syntax:
+Regexpress allows you to use placeholders as well to use common values in multiple regex patterns, by using double tilde (~) syntax:
 ```javascript
 {
     "commonly_used_values": [
