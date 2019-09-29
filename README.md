@@ -5,7 +5,7 @@ Regexes can be defined from JSON or as object literals at runtime by declaring a
 ```javascript
 {
     "settings": {
-        "template" : values
+        "template": "values"
         "flags": "i"
     },
     "values": [
@@ -22,12 +22,12 @@ Capturing groups and non-capturing ones are used to delineate parts of the regex
 ```javascript
 {
     "settings": {
-        "template": (?:field_name): (field_values),
+        "template": "(?:field_name): (field_values)",
         "flags": ""
     }
     "field_name": [
         "notation_one",
-        "notation_two,
+        "notation_two",
         "..."
     ],
     "field_values": [
@@ -41,12 +41,12 @@ Similarly, groups of regex lookeheads can be defined:
 ```javascript
 {
     "settings": {
-        "template": (?:field_name): (field_values)(?=lookahead_values),
+        "template": "(?:field_name): (field_values)(?=lookahead_values)",
         "flags": ""
     }
     "field_name": [
         "notation_one",
-        "notation_two,
+        "notation_two",
         "..."
     ],
     "field_values": [
@@ -73,12 +73,12 @@ Regexpress allows you to use placeholders as well to use common values in multip
 
 {
     "settings": {
-        "template": (?:field_name): (field_values),
+        "template": "(?:field_name): (field_values)",
         "flags": ""
     }
     "field_name": [
         "notation_one",
-        "notation_two,
+        "notation_two",
         "..."
     ],
     "field_values": [
