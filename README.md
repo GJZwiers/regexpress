@@ -59,4 +59,30 @@ Similarly, groups of regex lookeheads can be defined:
     ]
 }
 
-Regexpress allows the insertion of placeholders to substitute parts of a regex with more common groups of values. Say you have a regex 
+Regexpress allows you to use placeholders as well to use common values in multiple regex patterns, by using the "~~placeholder~~" syntax:
+
+{
+    "commonly_used_values": [
+        "1",
+        "2",
+        "3"
+    ]
+}
+
+{
+    "settings": {
+        "template": (?:field_name): (field_values),
+        "flags": ""
+    }
+    "field_name": [
+        "notation_one",
+        "notation_two,
+        "..."
+    ],
+    "field_values": [
+        "~~commonly_used_values~~",
+        "v1",
+        "v2",
+        "v3"
+    ]
+}
