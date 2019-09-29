@@ -2,7 +2,7 @@ RegExpress is a TypeScript/JavaScript library for writing extensive regex patter
 
 Regexes can be defined from JSON or as object literals at runtime by declaring a settings object and at least one group of search terms:
 
-{
+```javascript{
     "settings": {
         "template" : values
         "flags": "i"
@@ -12,7 +12,7 @@ Regexes can be defined from JSON or as object literals at runtime by declaring a
         'v2',
         'v3'
     ]
-}
+}```
 
 Arrays will be compiled to regex alternates, the above values array becomes: "v1|v2|v3"
 
