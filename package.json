@@ -1,6 +1,6 @@
 {
   "name": "regexpress",
-  "version": "1.1.0",
+  "version": "1.0.0",
   "description": "RegExpress is a TypeScript/JavaScript library for writing extensive regex patterns in a more organised and maintainable way. Large patterns can be structured in user-defined components and arrange them using a template string. It has functionality somewhat similar to named capturing groups in other regex flavours.",
   "main": "dist/RegexBuilder.js",
   "types": "dist/RegexBuilder.d.ts",
