@@ -37,7 +37,7 @@ Capturing groups and non-capturing ones are used to delineate parts of the regex
     ]
 }
 ```
-Similarly, groups of regex lookeheads can be defined:
+Similarly, groups of regex lookaheads can be defined:
 ```javascript
 {
     "settings": {
