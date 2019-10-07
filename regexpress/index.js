@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-class RegexBuilder {
+class Regexpress {
     constructor(placeholderSubstitutes) {
         this._placeholderSubstitutes = placeholderSubstitutes;
         this._regexData = { settings: { template: "empty", flags: "" }, "empty": ['empty'] };
@@ -60,5 +60,5 @@ class RegexBuilder {
         return map;
     }
 }
-exports.RegexBuilder = RegexBuilder;
+exports.Regexpress = Regexpress;
 //# sourceMappingURL=index.js.map

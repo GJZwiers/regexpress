@@ -9,7 +9,7 @@ export interface RegexData {
 export interface PlaceholderSubstitutes {
     [key: string]: any;
 }
-export declare class RegexBuilder {
+export declare class Regexpress {
     private _regexData;
     private _placeholderSubstitutes;
     constructor(placeholderSubstitutes: PlaceholderSubstitutes);
