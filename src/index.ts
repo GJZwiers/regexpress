@@ -15,7 +15,7 @@ export interface PlaceholderSubstitutes
     [key: string]: any
 }
 
-export class RegexBuilder
+export class Regexpress
 {
     private _regexData: RegexData;
     private _placeholderSubstitutes: PlaceholderSubstitutes;
