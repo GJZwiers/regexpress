@@ -16,7 +16,8 @@ Usage:
 
     const rgxBuilder = new Regexpress(list_of_substitute_values);
 
-    // Get some regex data, this can be in any form that is a valid Javascript object (JSON, object literal, mongoDB schema, etc.).
+    // Get some regex data, this can be in any form that is a valid Javascript object
+    // (JSON, object literal, mongoDB schema, etc.).
     const exampleData = {
         settings: {
             template: 'values',
@@ -24,7 +25,9 @@ Usage:
         },
         values: [
             '1',
-            '~~substitutes~~',  // placeholders are declared with ~~somename~~ and substituted with values from the list given earlier
+            // placeholders are declared with ~~somename~~ and substituted
+            // with values from the list given earlier
+            '~~substitutes~~',
             '2',
             '3'
         ]
@@ -34,7 +37,8 @@ Usage:
     const regex = rgxBuilder.buildRegex(exampleData);
 
     /*
-    Placeholders will be substituted, and all the declared fields other than settings are built (arrays are joined with |, strings stay as is) and inserted at the right spot in the template string:
+    Placeholders will be substituted, and all the declared fields other than
+    settings are built (arrays are joined with |, strings stay as is) and inserted at the right spot in the template string:
 
     -> substitution: values: [ '1', 's1', 's2', 's3', '2', '3' ]
     -> array join with |: values: '1|s1|s2|s3|2|3'
