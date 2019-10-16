@@ -42,7 +42,7 @@ Usage:
 
     -> substitution: values: [ '1', 's1', 's2', 's3', '2', '3' ]
     -> array join with |: values: '1|s1|s2|s3|2|3'
-    -> template insertion: 'values' -> '1|s1|s2|s3|2|3'
+    -> template insertion: template: 'values' -> template: '1|s1|s2|s3|2|3'
 
     With multiple template groups it is possible to make more complex arrangements
 
