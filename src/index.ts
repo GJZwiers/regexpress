@@ -17,12 +17,11 @@ export interface PlaceholderSubstitutes
 
 export class Regexpress
 {
-    private _regexData: RegexData;
-    private _placeholderSubstitutes: PlaceholderSubstitutes;
+    private _regexData: RegexData = { settings: { template: "empty", flags: ""}, "empty": ["empty"]};
+    private _placeholderSubstitutes: PlaceholderSubstitutes = { empty: "empty"};
 
-    constructor(placeholderSubstitutes: PlaceholderSubstitutes) {
+    constructor(placeholderSubstitutes: object) {
         this._placeholderSubstitutes = placeholderSubstitutes;
-        this._regexData = { settings: { template: "empty", flags: ""}, "empty": ['empty']};
     }
 
     public setPlaceholderSubstitutes(subs: PlaceholderSubstitutes) {
