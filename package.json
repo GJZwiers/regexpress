@@ -12,7 +12,7 @@
     "type": "git",
     "url": "git+https://github.com/GJZwiers/RegExpress.git"
   },
-  "keywords": [],
+  "keywords": ["regex", "regular expressions", "builder" ],
   "author": "Geert-Jan Zwiers",
   "license": "MIT",
   "bugs": {
