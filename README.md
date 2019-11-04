@@ -13,22 +13,32 @@ Usage:
                         .build();
     
     /*
-    This builds a regex from the following template string: "(values)separators(?=lookaheads)" by replacing
-    the names in the template with the corresponding named group
+    This builds a regex from the following template string:
+    "(values)separators(?=lookaheads)" by replacing the 
+    names in the template with the corresponding named group
      
     The above results in: /(a|b|c)[: ]+(?=d|e)/g
 
-    Arrays of strings are joined by default to a string of regex alternates: ['a', 'b', 'c'] -> a|b|c
-
-    If you want a different way of accessing the capturing groups in the matches you can call the map method
-    of the TemplateGroupMapper class to change matches to 
-    { fullMatch: ..., values: ... }
-
+    Arrays of strings are joined by default to a string of alternates: ['a', 'b', 'c'] -> a|b|c
     */
-
-    const mappedMatches = TemplateGroupMapper.map(matches, builder.getTemplate());
-
 ```
+
+
+```javascript
+    import { RegexBuilder, TemplateGroupMapper } from 'regexpress';
+
+    const builder = new RegexBuilder();
+    const regex = builder.add('start', 'full_')
+                        .addGroup('(end)', ['match']) // creates template string: 'start(end)'
+                        .build();
+
+    const text = 'full_match';
+    const matches = text.match(regex);  
+
+    // converts matches array ['full_match', 'match'] to { fullMatch: 'full_match', end: 'match'}
+    const mappedMatches = TemplateGroupMapper.map(matches, builder.getTemplate());
+```
+
 
 Planned additions:
 
@@ -36,4 +46,4 @@ Planned additions:
 - ability to substitute placeholders for commonly occurring groups of values
 - support for arrays of templates containing different group configurations
 
-This package is in early development and is being written in TypeScript. Suggestions for improvement or identification of problems are very welcome.
+This package is in early development and is being written in TypeScript. Improvement suggestions and issue notifications are very welcome.

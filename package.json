@@ -15,7 +15,10 @@
   "keywords": [
     "regex",
     "regular expressions",
-    "builder"
+    "builder",
+    "typescript",
+    "javascript",
+    "es6"
   ],
   "author": "Geert-Jan Zwiers",
   "license": "MIT",
@@ -23,12 +26,14 @@
     "url": "https://github.com/GJZwiers/RegExpress/issues"
   },
   "homepage": "https://github.com/GJZwiers/RegExpress#readme",
-  "dependencies": {},
+  "dependencies": {
+    "esm": "^3.2.25"
+  },
   "devDependencies": {
     "@types/jest": "^24.0.18",
     "jest": "^24.9.0",
     "rewire": "^4.0.1",
     "ts-jest": "^24.1.0",
-    "typescript": "^3.6.3"
+    "typescript": "^3.6.4"
   }
 }
