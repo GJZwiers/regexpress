@@ -39,6 +39,12 @@ Usage:
     const mappedMatches = TemplateGroupMapper.map(matches, builder.getTemplate());
 ```
 
+This package uses the esm module for es6 module support in Node.js.
+
+Use the following command to run an index.js file with some regexpress code:
+```console
+node -r esm index.js
+```
 
 Planned additions:
 
