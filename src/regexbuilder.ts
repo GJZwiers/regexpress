@@ -12,6 +12,7 @@ export class RegexBuilder {
 
     addGroup(name: string, values: Array<string>) : RegexBuilder {
         if (!/^\(/.test(name)) throw new Error('attempting to add regex group without brackets');
+        if (!Array.isArray(values)) throw new Error('please add groups as type Array');
         this.template += name;
         this.groups.push({ name: name, values: values });
 
