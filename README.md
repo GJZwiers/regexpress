@@ -92,7 +92,6 @@ Planned additions :
     }
 
     const builder = new RegexJSONBuilder(subs);
-    const regex = builder.build(fieldOne);
 
     const euDate = {
         settings: {
@@ -104,7 +103,8 @@ Planned additions :
         year: '~~year~~'
     }
 
-    // creates pattern: /(\d{1,2})-(\d{1,2|\w+)-(\d{4})/
+    builder.build(euDate);
+    // will build pattern: /(\d{1,2})-(\d{1,2|\w+)-(\d{4})/
 
     const usDate = {
         settings: {
@@ -116,7 +116,8 @@ Planned additions :
         year: '~~year~~'
     }
 
-    // creates pattern: /(\d{1,2|\w+)-(\d{1,2})-(\d{4})/
+    builder.build(usDate);
+    // will build pattern: /(\d{1,2|\w+)-(\d{1,2})-(\d{4})/
 
 ```
 
@@ -145,6 +146,14 @@ Planned additions :
 
     const builder = new RegexListBuilder();
     const regexes = builder.build(regexData);
+
+    /* 
+    will build patterns: [
+        /(\d{1,4})([mcd]l)/i,
+        /[>< ]+(\d{1,4})([mcd]l)/i,
+        /(\d{1,4})([mcd]l)[- ]+(\d{1,4})([mcd]l)/i
+    ] 
+    */
 ```
 
 
