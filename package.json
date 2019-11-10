@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "prepublish": "tsc",
   "scripts": {
-    "test": "jest"
+    "test": "mocha --reporter spec --require esm --require ts-node/register test/**/*.test.ts"
   },
   "repository": {
     "type": "git",
@@ -26,14 +26,18 @@
     "url": "https://github.com/GJZwiers/RegExpress/issues"
   },
   "homepage": "https://github.com/GJZwiers/RegExpress#readme",
+  "type": "module",
   "dependencies": {
-    "esm": "^3.2.25"
+    "esm": "^3.2.25",
+    "node": "^13.1.0"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.18",
-    "jest": "^24.9.0",
+    "@types/chai": "^4.2.4",
+    "@types/mocha": "^5.2.7",
+    "chai": "^4.2.0",
+    "mocha": "^6.2.2",
     "rewire": "^4.0.1",
-    "ts-jest": "^24.1.0",
+    "ts-node": "^8.4.1",
     "typescript": "^3.6.4"
   }
 }

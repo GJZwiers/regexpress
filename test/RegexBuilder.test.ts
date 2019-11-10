@@ -1,15 +1,53 @@
-// import { RegexBuilder } from "../src/index";
+import { RegexJSONBuilder } from '../src/index';
 
-// const mockRegexData = {
-//     settings: {
-//         template: '(values)',
-//         flags: ''
-//     },
-//     values: [
-//         '1',
-//         '2'
-//     ]
-// };
+import * as mocha from  'mocha';
+import * as chai from 'chai';
+
+const expect = chai.expect;
+
+const mockRegexData = {
+    settings: {
+        template: '(values)',
+        flags: ''
+    },
+    values: [
+        '1',
+        '2'
+    ]
+};
+
+const mockRegexDataMulti = {
+    settings: {
+        template: '(one)(two)(three)',
+        flags: ''
+    },
+    one: [
+        '1',
+        '2'
+    ],
+    two: [
+        '2',
+        '3'
+    ],
+    three: [
+        '3',
+        '4'
+    ]
+};
+
+describe('Regex JSON Builder tests', () => {
+
+    it('Should create regex /(1|2)/ from template "(values)" and values field: ["1", "2"]', () => {
+        expect(new RegexJSONBuilder().build(mockRegexData)).to.deep.equal(/(1|2)/);
+    });
+
+    it('Should arrange template groups properly: template (one)(two)(three) => /(1|2)(2|3)(3|4)/', () => {
+        expect(new RegexJSONBuilder().build(mockRegexDataMulti)).to.deep.equal(/(1|2)(2|3)(3|4)/);
+    });
+  
+  });
+
+
 
 // test('Regexpress correctly builds a pattern from json', () => {
 //     let rb = new RegexBuilder(mockPlaceholderSubs);

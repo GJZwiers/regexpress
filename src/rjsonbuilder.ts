@@ -14,7 +14,10 @@ interface PlaceholderSubstitutes
 {
     [key: string]: any
 }
+// TemplateWorker
 
+// TemplateGroups as tokens (interpreter pattern
+// class TemplateParser)
 export class RegexJSONBuilder {
     private _regexData: RegexData = { settings: { template: 'values', flags: '' }, values: ''};
     private _template = this._regexData.settings.template;
@@ -34,7 +37,7 @@ export class RegexJSONBuilder {
         return new RegExp(regex, this._regexData.settings.flags);
     }
 
-    deepCopy(field: RegexData) {
+    deepCopy(field: RegexData) : RegexData {
         return JSON.parse(JSON.stringify(field));
     }
 
