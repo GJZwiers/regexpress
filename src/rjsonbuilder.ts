@@ -1,59 +1,62 @@
-interface RegexSettings
-{
-    template: string,
+export interface RegexSettings {
+    template: string | Array<string>,
     flags: string
 }
 
-interface RegexData
-{
+export interface RegexData {
     settings: RegexSettings
     [key: string]: any
 }
 
-interface PlaceholderSubstitutes
-{
-    [key: string]: any
+export class Cloner {
+    static deepCopy<T extends object>(obj: T) : T {
+        return JSON.parse(JSON.stringify(obj));
+    }
 }
-// TemplateWorker
 
-// TemplateGroups as tokens (interpreter pattern
-// class TemplateParser)
-export class RegexJSONBuilder {
-    private _regexData: RegexData = { settings: { template: 'values', flags: '' }, values: ''};
-    private _template = this._regexData.settings.template;
+export abstract class BuilderBase {
+    protected _regexData: RegexData = { settings: { template: 'values', flags: '' }, values: ''};
+    protected _symbol: string;
+    protected _template = this._regexData.settings.template;
 
-    constructor() {}
+    constructor(symbol: string = '|') {
+        this._symbol = symbol;
+    }
 
     getTemplate() {
         return this._template;
     }
 
-    build(field: RegexData) : RegExp {
-        this._regexData = this.deepCopy(field);
-        this._template = this._regexData.settings.template;
-        this._buildGroups();
-        const regex = this._buildTemplate();
-
-        return new RegExp(regex, this._regexData.settings.flags);
+    protected _buildGroup(group: Array<string>) : string {
+        if (!Array.isArray(group)) return group;
+        return group.join(this._symbol);
     }
 
-    deepCopy(field: RegexData) : RegexData {
-        return JSON.parse(JSON.stringify(field));
-    }
-
-    private _buildGroups() : void {
+    protected _buildGroups() : void {
         for (const group in this._regexData) {
-            if (!Array.isArray(this._regexData[group])) continue;
-            this._regexData[group] = this._regexData[group].join('|');
+            this._regexData[group] = this._buildGroup(this._regexData[group]);
         }
     }
+}
 
-    private _buildTemplate() : string {
-        return this._substituteTemplateGroups();
+export class RegexJSONBuilder extends BuilderBase {
+
+    build(field: RegexData) : RegExp {
+        this._regexData = Cloner.deepCopy(field);
+        this._template = this._regexData.settings.template;
+        this._buildGroups();
+
+        return this._buildRegex();
+    }
+
+    private _buildRegex() : RegExp {
+        return new RegExp(this._substituteTemplateGroups(), this._regexData.settings.flags);
     }
 
     private _substituteTemplateGroups() : string {
         let template = this._template;
+        if (Array.isArray(template)) return template[0];
+        
         for (const group in this._regexData) {
             template = template.replace(group, this._regexData[group]);
         }
