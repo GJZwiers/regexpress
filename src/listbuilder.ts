@@ -1,21 +1,10 @@
-import { Cloner, BuilderBase, RegexData, RegexSettings } from "./rjsonbuilder";
-
-// interface RegexListSettings {
-//     template?: string
-//     templates?: Array<string>
-//     flags: string
-// }
-
-// interface RegexListData {
-//     settings: RegexListSettings
-//     [key: string]: any
-// }
+import { BuilderBase } from "./rjsonbuilder";
+import { RegexListData } from "./IRegex";
 
 export class RegexListBuilder extends BuilderBase  {
 
-    buildList(field: RegexData) : Array<RegExp> {
-        this._regexData = Cloner.deepCopy(field);
-        console.log(this._regexData);
+    buildList(field: RegexListData) : Array<RegExp> {
+        this._regexData = field;
         this._template = this._regexData.settings.template;
         this._buildGroups();
 
@@ -28,6 +17,7 @@ export class RegexListBuilder extends BuilderBase  {
             list.push(new RegExp(this._substituteTemplateGroups(template),
                 this._regexData.settings.flags));
         }
+        
         return list;
     }
 

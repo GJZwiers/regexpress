@@ -1,23 +1,10 @@
-export interface RegexSettings {
-    template: string | Array<string>,
-    flags: string
-}
-
-export interface RegexData {
-    settings: RegexSettings
-    [key: string]: any
-}
-
-export class Cloner {
-    static deepCopy<T extends object>(obj: T) : T {
-        return JSON.parse(JSON.stringify(obj));
-    }
-}
+import { RegexData, RegexListData} from './IRegex';
 
 export abstract class BuilderBase {
-    protected _regexData: RegexData = { settings: { template: 'values', flags: '' }, values: ''};
+    protected _regexData: RegexData | RegexListData = { settings: { template: 'values', flags: '' }, values: ''};
     protected _symbol: string;
     protected _template = this._regexData.settings.template;
+    protected _templates: Array<string> = [];
 
     constructor(symbol: string = '|') {
         this._symbol = symbol;
@@ -42,10 +29,10 @@ export abstract class BuilderBase {
 export class RegexJSONBuilder extends BuilderBase {
 
     build(field: RegexData) : RegExp {
-        this._regexData = Cloner.deepCopy(field);
+        this._regexData = field;
         this._template = this._regexData.settings.template;
         this._buildGroups();
-
+        
         return this._buildRegex();
     }
 
@@ -65,5 +52,3 @@ export class RegexJSONBuilder extends BuilderBase {
     }
 
 }
-
-
