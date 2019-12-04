@@ -1,7 +1,7 @@
 import { BuilderBase } from "./rjsonbuilder";
 import { RegexListData } from "./IRegex";
 
-export class RegexListBuilder extends BuilderBase  {
+export class RegexListBuilder extends BuilderBase {
 
     buildList(field: RegexListData) : Array<RegExp> {
         this._regexData = field;

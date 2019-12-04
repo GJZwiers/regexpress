@@ -5,4 +5,8 @@ export class AugmentedExp extends RegExp {
         super(pattern, flags);
         this._template = template;
     }
+
+    getTemplate() {
+        return this._template;
+    }
 }
