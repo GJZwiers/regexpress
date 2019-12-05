@@ -83,4 +83,4 @@ describe('Regex JSON Builder tests', () => {
             .to.throw('found undefined placeholder ~~holdplacer~~ in regex data');
     });
   
-  });
+});
