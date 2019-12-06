@@ -135,7 +135,7 @@ Planned additions :
         settings: {
             templateList: [
             '(volume)(unit)',
-            '[>< ]+(volume)(unit)'
+            '[>< ]+(volume)(unit)',
             '(volume)(unit)[- ]+(volume)(unit)'
             ],
             flags: 'i'

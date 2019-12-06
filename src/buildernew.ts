@@ -1,33 +1,42 @@
 import { AugmentedExp } from './augmentedExp';
 
+interface Buildable {
+    build() : RegExp;
+}
+
 export interface RXData {
     [key: string]: string[] | string
+}
+
+export interface RXPlaceholder {
+    [key: string]: string[]
 }
 
 export interface RXSettings {
     template: string
     flags: string
     symbol?: string
+    templateList?: string[]
 }
 
-export abstract class RBuilderBase {
+export class RegexBuilderBase {
     protected _regexData: RXData;
     protected _settings: RXSettings;
-    protected _placeholderData: RXData;
+    protected _placeholderData: RXPlaceholder ;
 
-    constructor(regexData: RXData, settings: RXSettings, placeholders?: RXData) {
+    constructor(regexData: RXData, settings: RXSettings, placeholders?: RXPlaceholder) {
         this._regexData = regexData;
         this._settings = settings;  
         this._placeholderData = placeholders || {};
     }
 
-    protected _buildTemplate() : string {
-        let template = '';
+    protected _buildTemplate(template: string) : string {
         for (const namedGroup in this._regexData) {
             let builtGroup = this._buildGroup(this._regexData[namedGroup]);
-            template += this._substituteGroup(namedGroup, this._substitutePlaceholder(builtGroup));
+            let subbedGroup = this._substitutePlaceholder(builtGroup);
+            template = template.replace(new RegExp(`${namedGroup}(?=\\W)`, 'g'), subbedGroup);
         }
-
+        
         return template;
     }
 
@@ -35,28 +44,42 @@ export abstract class RBuilderBase {
         return (Array.isArray(group)) ? group.join(this._settings.symbol || '|') : group;
     }
 
-    protected _substituteGroup(group: string, b: string) : string {
-        return this._settings.template.replace(group, b);
-    }
-
     protected _substitutePlaceholder(group: string) : string {
-        const tis = this;
+        const thisRef = this;
         return group.replace(/~~(\w+)~~/, (match: string, p1: string) => {
-            if (!tis._placeholderData[p1]) throw new Error(`found undefined placeholder ${match} in regex data`);
-            return tis._buildGroup(tis._placeholderData[p1]);
+            if (!thisRef._placeholderData[p1]) throw new Error(`found undefined placeholder ${match} in regex data`);
+            return thisRef._buildGroup(thisRef._placeholderData[p1]);
         });
     }
 
 }
 
-export class NRegexBuilder extends RBuilderBase {
+export class TemplateBuilder extends RegexBuilderBase {
 
-    build() : AugmentedExp {
-        return this._buildRegex(this._buildTemplate());
+    public build() : AugmentedExp {
+        return this._buildRegex(this._buildTemplate(this._settings.template));
     }
 
     private _buildRegex(template: string) : AugmentedExp {
         return new AugmentedExp(template, this._settings.flags, this._settings.template);
+    }
+
+}
+
+export class TemplateListBuilder extends RegexBuilderBase {
+
+    public build() : Array<RegExp> {
+        if (!this._settings.templateList) throw new Error('templateList must be defined');
+        const regexList: Array<RegExp> = [];
+        for (let template of this._settings.templateList) {
+            regexList.push(this._buildRegex(this._buildTemplate(template)));
+        }
+        
+        return regexList;
+    }
+
+    private _buildRegex(template: string) : RegExp {
+        return new RegExp(template, this._settings.flags);
     }
 
 }

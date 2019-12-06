@@ -1,5 +1,6 @@
 export { RegexBuilder } from './regexbuilder'
-export { TemplateGroupMapper } from './templategroupmapper'
+export { TemplateMapper } from './templatemapper'
 export { RegexJSONBuilder } from './rjsonbuilder'
 export { RegexListBuilder } from './listbuilder'
-export { NRegexBuilder } from './buildernew'
+export { TemplateBuilder, TemplateListBuilder, RXData, RXSettings, RXPlaceholder } from './buildernew'
+export { Regexpress } from './regexpress';
