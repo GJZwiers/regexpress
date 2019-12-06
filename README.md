@@ -1,154 +1,65 @@
-Regexpress enables construction of regex patterns using template strings. Templates can be built
-piece by piece or by declaring objects with regex settings and values. 
+Regexpress creates regex patterns from data using template strings. Templates can be 
+specified in a settings object and accompanied by a data object.
 
-Example (piece by piece construction):
+Usage:
 
 ```javascript
-    import { RegexBuilder } from 'regexpress';
+import { Regexpress } from 'regexpress';
 
-    const builder = new RegexBuilder();
-    const regex = builder.addGroup('(values)', ['a', 'b', 'c'])
-                        .add('separatorChars', '[: ]+')
-                        .addGroup('(?=lookaheads)', ['d', 'e'])
-                        .setFlags('g')
-                        .build();
+const rxp = new Regexpress();
 ```
-The above creates the template string "(values)separatorChars(?=lookaheads)"
-and keeps a list of group names and values. The regex is built
-by substituting the group names in the template with the corresponding group values.
 
-String arrays are joined by default with pipe '|' symbols
-to make alternates: 
 ```javascript
-['a', 'b', 'c'] -> 'a|b|c'
+const regexData = {
+    volume: '\\d{1,4}',
+    unit: ['ml', 'cl', 'l']
+};
+
+const settings = {
+    template: '(volume) (unit)',
+    flags: 'i'
+};
+
+const regex = rxp.buildRegex(regexData, settings);
 ```
-The template string:
+The above builds the pattern: ```/\d{1,4} (ml|cl|l)/i``` in the following steps:
+ * Arrays of strings are joined with pipe symbols by default
+to create alternates:
 ```javascript
-"(values)separatorChars(?=lookaheads)"
+['ml', 'cl', 'l'] -> 'ml|cl|l'
 ```
-thus becomes:
+* The values are inserted into the regex group in the template string:
 ```javascript
-"(a|b|c)[: ]+(?=d|e)"
+'(volume) (unit)' -> '(\\d{1,4}) (unit)'
+'(\\d{1,4}) (unit)' -> '(\\d{1,4}) (ml|cl|l)'
 ```
-This string is then compiled to regex
+* The string is then compiled to regex 
 with the specified flag(s):
 ```javascript
-/(a|b|c)[: ]+(?=d|e)/g
+'(\\d{1,4}) (ml|cl|l)' -> /(\d{1,4}) (ml|cl|l)/i
 ```
 
-Example (predefined data)
-```javascript
-    import { RegexJSONBuilder } from 'regexpress';
+Regexpress can be helpful in scenarios where you want to match data coming in a high variety of different notations but with similar meaning. Suppose you want to match volume data which can come as either a single value, a min-max range or a limit value (e.g. > 100). With Regexpress you can declare a list of templates for each of these:
 
-    const regexData = {
-        settings: {
-            template: '(values)separatorChars(?=lookaheads)',
-            flags: 'g'
-        },
-        values: ['a','b','c'],
-        separatorChars: '[: ]+',
-        lookaheads: ['d', 'e']
-    }
-
-    const builder = new RegexJSONBuilder();
-    const regex = builder.build(regexData);
-```
-
-In order to map arrays of matches to an object with the fields being your pattern's groups, use the template mapper:
-
-```javascript
-    import { RegexBuilder, TemplateGroupMapper } from 'regexpress';
-
-    const builder = new RegexBuilder();
-    const regex = builder.add('start', 'full_')
-                        .addGroup('(end)', ['match']) // creates template string: 'start(end)'
-                        .build();
-
-    const text = 'full_match';
-    const matches = text.match(regex);  
-
-    // converts matches array ['full_match', 'match'] to { fullMatch: 'full_match', end: 'match'}
-    const mappedMatches = TemplateGroupMapper.map(matches, builder.getTemplate());
-```
-
-To run a file with some regexpress code from the command line, try the following (requires Node.js v1.6+)
-```console
-node -r esm filename.js
-```
-
-Planned additions :
-
-* creating an object of commonly used groups and the ability to 
-  insert them into multiple patterns with placeholder text
-
-(to be implemented)
  ```javascript
-    import { RegexJSONBuilder } from 'regexpress';
-
-    const subs = {
-        day: '\d{1,2}',
-        month: '\d{1,2}|\w+',
-        year: '\d{4}'
-    }
-
-    const builder = new RegexJSONBuilder(subs);
-
-    const euDate = {
-        settings: {
-            template: '(day)-(month)-(year)'
-            flags: ''
-        },
-        day: '~~day~~',
-        month: '~~month~~',
-        year: '~~year~~'
-    }
-
-    builder.build(euDate);
-    // will build pattern: /(\d{1,2})-(\d{1,2|\w+)-(\d{4})/
-
-    const usDate = {
-        settings: {
-            template: '(month)-(day)-(year)'
-            flags: ''
-        },
-        day: '~~day~~',
-        month: '~~month~~',
-        year: '~~year~~'
-    }
-
-    builder.build(usDate);
-    // will build pattern: /(\d{1,2|\w+)-(\d{1,2})-(\d{4})/
-
-```
-
-* support for arrays of templates containing different group configurations:
-(to be implemented)
- ```javascript
-    import { RegexListBuilder } from 'regexpress';
-
-    const subs = {
-        volume: '\d{1,4}',
-        unit: '[mcd]l'
-    }
-
-    const regexData = {
-        settings: {
+    const settings = {
             templateList: [
-            '(volume)(unit)',
-            '[>< ]+(volume)(unit)'
-            '(volume)(unit)[- ]+(volume)(unit)'
+            '(volume) (unit)[- ]+(volume) (unit)',  // Range
+            '[>< ]+(volume) (unit)',                // Limit
+            '(volume) (unit)',                      // Single
             ],
             flags: 'i'
-        },
-        volume: '~~volume~~',
-        unit: '~~unit~~',
+    },
+
+    const regexData = {
+        volume: '\\d{1,4}',
+        unit: ['ml', 'cl', 'l'],
     }
 
-    const builder = new RegexListBuilder();
-    const regexes = builder.build(regexData);
+    const regexes = rxp.buildRegexes(regexData, settings);
 
     /* 
-    will build patterns: [
+    Will build array of patterns: [
         /(\d{1,4})([mcd]l)/i,
         /[>< ]+(\d{1,4})([mcd]l)/i,
         /(\d{1,4})([mcd]l)[- ]+(\d{1,4})([mcd]l)/i
@@ -156,4 +67,63 @@ Planned additions :
     */
 ```
 
+Regexpress extends the RegExp object with the template string. After matching the list of matches can be mapped to an object with the named groups being the keys:
 
+```javascript
+const textData = '100 ml';
+// template: '(volume) (unit)'
+const matches = textData.match(regex);
+// matches: [ '100 ml', '100', 'ml']
+const map = rxp.mapTemplate(matches, regex.getTemplate()); 
+// map: { fullMatch: '100 ml', volume: '100', unit: 'ml' }
+```
+
+You can reuse regex groups in a number of patterns by declaring them in a separate object and adding placeholders in the regex data. They can also be used when you want to have similar groups but want to name them differently:
+
+The example below reuses components for day, month and year in both an expiry date as well as a calendar date:
+
+ ```javascript
+    import { Regexpress } from 'regexpress';
+
+    const substitutes = {
+        day: '[0-3][0-9]',
+        month:  ['jan','feb','mar','apr','may','jun',
+                'jul','aug','sep','okt','nov','dec'],
+        year: '(?:19|20)\\d{2}'
+    }
+    
+    const productExpirationDate = {
+        expire_statement: ['best before', 'best quality up until', 'use before'],
+        day: '~~day~~',
+        month: '~~month~~',
+        year: '~~year~~'
+    }
+    
+    const ExpirationDateSettings = {
+        template: '(?:expire_statement): (day)-(month)-(year)',
+        flags: ''
+    }
+    
+    const calendarDate = {
+        day: '~~day~~',
+        month: '~~month~~',
+        year: '~~year~~'
+    }
+    
+    const calendarDateSettings = {
+        templateList: [
+        '(day)-(month)-(year)',
+        '(month)-(day)-(year)'
+        ],
+        flags: ''
+    }
+
+```
+
+To test run a file with regexpress code from your command line, ESM is required to handle ES6 modules:
+```console
+node -r esm filename.js
+
+```
+
+Future releases will include support for bringing in data from more formats, e.g. databases, CSV, XML, YAML, etc.
