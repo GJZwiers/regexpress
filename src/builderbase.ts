@@ -26,11 +26,12 @@ export class RegexBuilderBase {
     }
 
     protected _substitutePlaceholder(group: string) : string {
-        const thisRef = this;
-        return group.replace(/~~(\w+)~~/, (match: string, p1: string) => {
-            if (!thisRef._placeholderData[p1]) throw new Error(`found undefined placeholder ${match} in regex data`);
-            return thisRef._buildGroup(thisRef._placeholderData[p1]);
-        });
+        const swap = (match: string, p1: string) => {
+            if (!this._placeholderData[p1]) throw new Error(`found undefined placeholder ${match} in regex data`);
+            return this._buildGroup(this._placeholderData[p1]);
+        };
+
+        return group.replace(/~~(\w+)~~/, swap);
     }
 
 }

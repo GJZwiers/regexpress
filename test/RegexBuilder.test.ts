@@ -18,7 +18,6 @@ const mockSettings = {
 };
 
 const mockRegexDataMulti = {
-
     one: [
         '1',
         '2'
@@ -37,7 +36,6 @@ const settingsMulti = {
     template: '(one)(two)(three)',
     flags: ''
 };
-
 
 
 const mockPlaceholder = {

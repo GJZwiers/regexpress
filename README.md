@@ -60,9 +60,9 @@ Regexpress can be helpful in scenarios where you want to match data coming in a 
 
     /* 
     Will build array of patterns: [
-        /(\d{1,4})([mcd]l)/i,
-        /[>< ]+(\d{1,4})([mcd]l)/i,
-        /(\d{1,4})([mcd]l)[- ]+(\d{1,4})([mcd]l)/i
+        /(\d{1,4})(ml|cl|l)/i,
+        /[>< ]+(\d{1,4})(ml|cl|l)/i,
+        /(\d{1,4})(ml|cl|l)[- ]+(\d{1,4})(ml|cl|l)/i
     ] 
     */
 ```
