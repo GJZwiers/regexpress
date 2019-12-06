@@ -1,4 +1,4 @@
-import { RegexJSONBuilder, TemplateBuilder } from '../src/index';
+import { TemplateBuilder } from '../src/index';
 
 import * as mocha from  'mocha';
 import * as chai from 'chai';
@@ -6,21 +6,19 @@ import * as chai from 'chai';
 const expect = chai.expect;
 
 const mockRegexData = {
-    settings: {
-        template: '(values)',
-        flags: ''
-    },
     values: [
         '1',
         '2'
     ]
 };
 
+const mockSettings = {
+    template: '(values)',
+    flags: ''
+};
+
 const mockRegexDataMulti = {
-    settings: {
-        template: '(one)(two)(three)',
-        flags: ''
-    },
+
     one: [
         '1',
         '2'
@@ -34,6 +32,13 @@ const mockRegexDataMulti = {
         '4'
     ]
 };
+
+const settingsMulti = {
+    template: '(one)(two)(three)',
+    flags: ''
+};
+
+
 
 const mockPlaceholder = {
     placeholder: ['p1', 'p2', 'p3']
@@ -62,12 +67,6 @@ const mockRegexDataWithUndefinedPlaceholder = {
     ]
 };
 
-const mockSettings = {
-    template: '(values)',
-    flags: ''
-};
-
-
 describe('regex builder logic tests', () => {
 
     it('should be possible to instantiate without passing any placeholders', () => {
@@ -76,12 +75,12 @@ describe('regex builder logic tests', () => {
     });
 
     it('should create regex /(1|2)/ from template "(values)" and object { values: ["1", "2"] }', () => {
-        expect(new RegexJSONBuilder().build(mockRegexData))
+        expect(new TemplateBuilder(mockRegexData, mockSettings).build())
             .to.deep.equal(/(1|2)/);
     });
 
     it('should arrange template groups properly: template (one)(two)(three) => /(1|2)(2|3)(3|4)/', () => {
-        expect(new RegexJSONBuilder().build(mockRegexDataMulti))
+        expect(new TemplateBuilder(mockRegexDataMulti, settingsMulti).build())
             .to.deep.equal(/(1|2)(2|3)(3|4)/);
     });
     
