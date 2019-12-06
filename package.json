@@ -1,6 +1,6 @@
 {
   "name": "regexpress",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Regexpress enables construction of regex patterns using template strings. Templates can be built piece by piece or by declaring objects with regex settings and values.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
