@@ -28,7 +28,9 @@
   "homepage": "https://github.com/GJZwiers/RegExpress#readme",
   "type": "module",
   "dependencies": {
+    "@types/node": "^12.12.14",
     "esm": "^3.2.25",
+    "js-yaml": "^3.13.1",
     "node": "^13.1.0"
   },
   "devDependencies": {

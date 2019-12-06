@@ -1,12 +1,22 @@
+const fs = require('fs');
+const yaml = require('js-yaml');
+
 class RegexDataConvertor {
 
     constructor() {}
 
-    fromCSV() {
-
+    async fromJSON(path: string) {
+        const file = await fetch(path);
+        const data = await file.json();
     }
 
-    fromXML() {
-        
+    async fromYAML(path: string) {
+        const file = yaml.safeLoad(fs.readFileSync(path, 'utf8'));
     }
+
+    async fromCSV(path: string) {
+        const file = await fetch(path);
+        const data = await file.text();
+    }
+
 }
