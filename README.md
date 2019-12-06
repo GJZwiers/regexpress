@@ -36,7 +36,7 @@ to create alternates:
 * The string is then compiled to regex 
 with the specified flag(s):
 ```javascript
-'(volume) (unit)' -> /(\d{1,4}) (ml|cl|l)/i
+'(\\d{1,4}) (ml|cl|l)' -> /(\d{1,4}) (ml|cl|l)/i
 ```
 
 Regexpress can be helpful in scenarios where you want to match data coming in a high variety of different notations but with similar meaning. Suppose you want to match volume data which can come as either a single value, a min-max range or a limit value (e.g. > 100). With Regexpress you can declare a list of templates for each of these:
