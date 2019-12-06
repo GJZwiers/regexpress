@@ -1,0 +1,14 @@
+version: 2
+jobs:
+  build:
+    branches:
+      only:
+        - class-refactoring
+        
+    docker:
+      - image: circleci/node:12.13.0
+
+    steps:
+      - checkout
+      - run: npm install
+      - run: npm test

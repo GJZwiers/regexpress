@@ -1,30 +1,43 @@
 {
   "name": "regexpress",
-  "version": "1.0.2",
-  "description": "RegExpress is a TypeScript/JavaScript library for writing extensive regex patterns in a more organised and maintainable way. Large patterns can be structured in user-defined components and arrange them using a template string. It has functionality somewhat similar to named capturing groups in other regex flavours.",
-  "main": "dist/RegexBuilder.js",
-  "types": "dist/RegexBuilder.d.ts",
+  "version": "2.1.2",
+  "description": "Regexpress enables construction of regex patterns using template strings. Templates can be built piece by piece or by declaring objects with regex settings and values.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "prepublish": "tsc",
   "scripts": {
-    "test": "jest"
+    "test": "mocha --reporter spec --require esm --require ts-node/register test/**/*.test.ts"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GJZwiers/RegExpress.git"
   },
-  "keywords": [],
+  "keywords": [
+    "regex",
+    "regular expressions",
+    "builder",
+    "typescript",
+    "javascript",
+    "es6"
+  ],
   "author": "Geert-Jan Zwiers",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/GJZwiers/RegExpress/issues"
   },
   "homepage": "https://github.com/GJZwiers/RegExpress#readme",
-  "dependencies": {},
+  "type": "module",
+  "dependencies": {
+    "esm": "^3.2.25",
+    "node": "^13.1.0"
+  },
   "devDependencies": {
-    "@types/jest": "^24.0.18",
-    "jest": "^24.9.0",
+    "@types/chai": "^4.2.4",
+    "@types/mocha": "^5.2.7",
+    "chai": "^4.2.0",
+    "mocha": "^6.2.2",
     "rewire": "^4.0.1",
-    "ts-jest": "^24.1.0",
-    "typescript": "^3.6.3"
+    "ts-node": "^8.4.1",
+    "typescript": "^3.6.4"
   }
 }

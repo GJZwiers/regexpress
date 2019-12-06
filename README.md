@@ -1,91 +1,129 @@
-RegExpress is a TypeScript/JavaScript library for writing extensive regex patterns in a more organised and maintainable way. Large patterns can be structured in user-defined components and arranged using a template string. It has functionality somewhat similar to named capturing groups in other regex flavours.
+Regexpress creates regex patterns from data using template strings. Templates can be 
+specified in a settings object and accompanied by a data object.
 
-Regexes can be defined from JSON or as object literals at runtime by declaring a settings object and at least one group of search terms:
+Usage:
 
 ```javascript
-{
-    "settings": {
-        "template": "values"
-        "flags": "i"
+import { Regexpress } from 'regexpress';
+
+const rxp = new Regexpress();
+```
+
+```javascript
+const regexData = {
+    volume: '\\d{1,4}',
+    unit: ['ml', 'cl', 'l']
+};
+
+const settings = {
+    template: '(volume) (unit)',
+    flags: 'i'
+};
+
+const regex = rxp.buildRegex(regexData, settings);
+```
+The above builds the pattern: ```/\d{1,4} (ml|cl|l)/i``` in the following steps:
+ * Arrays of strings are joined with pipe symbols by default
+to create alternates:
+```javascript
+['ml', 'cl', 'l'] -> 'ml|cl|l'
+```
+* The values are inserted into the regex group in the template string:
+```javascript
+'(volume) (unit)' -> '(\\d{1,4}) (unit)'
+'(\\d{1,4}) (unit)' -> '(\\d{1,4}) (ml|cl|l)'
+```
+* The string is then compiled to regex 
+with the specified flag(s):
+```javascript
+'(\\d{1,4}) (ml|cl|l)' -> /(\d{1,4}) (ml|cl|l)/i
+```
+
+Regexpress can be helpful in scenarios where you want to match data coming in a high variety of different notations but with similar meaning. Suppose you want to match volume data which can come as either a single value, a min-max range or a limit value (e.g. > 100). With Regexpress you can declare a list of templates for each of these:
+
+ ```javascript
+    const settings = {
+            templateList: [
+            '(volume) (unit)[- ]+(volume) (unit)',  // Range
+            '[>< ]+(volume) (unit)',                // Limit
+            '(volume) (unit)',                      // Single
+            ],
+            flags: 'i'
     },
-    "values": [
-        'v1',
-        'v2',
-        'v3'
-    ]
-}
+
+    const regexData = {
+        volume: '\\d{1,4}',
+        unit: ['ml', 'cl', 'l'],
+    }
+
+    const regexes = rxp.buildRegexes(regexData, settings);
+
+    /* 
+    Will build array of patterns: [
+        /(\d{1,4})([mcd]l)/i,
+        /[>< ]+(\d{1,4})([mcd]l)/i,
+        /(\d{1,4})([mcd]l)[- ]+(\d{1,4})([mcd]l)/i
+    ] 
+    */
 ```
 
-Arrays will be compiled to regex alternates, the above values array becomes: "v1|v2|v3"
+Regexpress extends the RegExp object with the template string. After matching the list of matches can be mapped to an object with the named groups being the keys:
 
-Capturing groups and non-capturing ones are used to delineate parts of the regex top-level using the template string:
 ```javascript
-{
-    "settings": {
-        "template": "(?:field_name): (field_values)",
-        "flags": ""
-    }
-    "field_name": [
-        "notation_one",
-        "notation_two",
-        "..."
-    ],
-    "field_values": [
-        "v1",
-        "v2",
-        "..."
-    ]
-}
+const textData = '100 ml';
+// template: '(volume) (unit)'
+const matches = textData.match(regex);
+// matches: [ '100 ml', '100', 'ml']
+const map = rxp.mapTemplate(matches, regex.getTemplate()); 
+// map: { fullMatch: '100 ml', volume: '100', unit: 'ml' }
 ```
-Similarly, groups of regex lookaheads can be defined:
-```javascript
-{
-    "settings": {
-        "template": "(?:field_name): (field_values)(?=lookahead_values)",
-        "flags": ""
-    }
-    "field_name": [
-        "notation_one",
-        "notation_two",
-        "..."
-    ],
-    "field_values": [
-        "v1",
-        "v2",
-        "..."
-    ],
-    "lookahead_values": [
-        "l1",
-        "l2",
-        "..."
-    ]
-}
-```
-Regexpress allows you to use placeholders as well to use common values in multiple regex patterns, by using double tilde (~) syntax:
-```javascript
-{
-    "commonly_used_values": [
-        "1",
-        "2",
-        "3"
-    ]
-}
 
-{
-    "settings": {
-        "template": "(?:field_name): (field_values)",
-        "flags": ""
+You can reuse regex groups in a number of patterns by declaring them in a separate object and adding placeholders in the regex data. They can also be used when you want to have similar groups but want to name them differently:
+
+The example below reuses components for day, month and year in both an expiry date as well as a calendar date:
+
+ ```javascript
+    import { Regexpress } from 'regexpress';
+
+    const substitutes = {
+        day: '[0-3][0-9]',
+        month:  ['jan','feb','mar','apr','may','jun',
+                'jul','aug','sep','okt','nov','dec'],
+        year: '(?:19|20)\\d{2}'
     }
-    "field_name": [
-        "notation_one",
-        "notation_two",
-        "..."
-    ],
-    "field_values": [
-        "~~commonly_used_values~~",
-        "v1",
-        "v2",
-        "v3"
-    ]
-}
+    
+    const productExpirationDate = {
+        expire_statement: ['best before', 'best quality up until', 'use before'],
+        day: '~~day~~',
+        month: '~~month~~',
+        year: '~~year~~'
+    }
+    
+    const ExpirationDateSettings = {
+        template: '(?:expire_statement): (day)-(month)-(year)',
+        flags: ''
+    }
+    
+    const calendarDate = {
+        day: '~~day~~',
+        month: '~~month~~',
+        year: '~~year~~'
+    }
+    
+    const calendarDateSettings = {
+        templateList: [
+        '(day)-(month)-(year)',
+        '(month)-(day)-(year)'
+        ],
+        flags: ''
+    }
+
 ```
+
+To test run a file with regexpress code from your command line, ESM is required to handle ES6 modules:
+```console
+node -r esm filename.js
+
+```
+
+Future releases will include support for bringing in data from more formats, e.g. databases, CSV, XML, YAML, etc.

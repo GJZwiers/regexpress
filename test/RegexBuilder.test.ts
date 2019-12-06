@@ -1,103 +1,97 @@
-import { RegexBuilder } from "../src/RegexBuilder";
+import { TemplateBuilder } from '../src/index';
+
+import * as mocha from  'mocha';
+import * as chai from 'chai';
+
+const expect = chai.expect;
 
 const mockRegexData = {
-    settings: {
-        template: '(values)',
-        flags: ''
-    },
     values: [
         '1',
         '2'
     ]
 };
 
-test('Regexpress correctly builds a pattern from json', () => {
-    let rb = new RegexBuilder(mockPlaceholderSubs);
+const mockSettings = {
+    template: '(values)',
+    flags: ''
+};
 
-    expect(rb.buildRegex(mockRegexData)).toEqual(/(1|2)/);
-});
+const mockRegexDataMulti = {
 
-const mockRegexDataMultiGroup = {
-    settings: {
-        template: '(group_one)(group_two)',
-        flags: ''
-    },
-    group_one: [
-        '11',
-        '12'
+    one: [
+        '1',
+        '2'
     ],
-    group_two: [
-        '21',
-        '22'
-    ]
-};
-
-test('Regexpress correctly arranges groups using the template string', () => {
-    let rb = new RegexBuilder(mockPlaceholderSubs);
-
-    expect(rb.buildRegex(mockRegexDataMultiGroup)).toEqual(/(11|12)(21|22)/);
-});
-
-const mockRegexDataWithSubs = {
-    settings: {
-        template: '(values)',
-        flags: ''
-    },
-    values: [
-        '~~test_placeholder~~',
-        '1',
-        '2'
-    ]
-};
-
-const mockPlaceholderSubs = {
-    test_placeholder: [
-        "sub1",
-        "sub2"
-    ]
-};
-
-test('RegExpress correctly substitutes a placeholder with the corresponding substitutes', () => {
-    let rb = new RegexBuilder(mockPlaceholderSubs);
-
-    expect(rb.buildRegex(mockRegexDataWithSubs)).toEqual(/(sub1|sub2|1|2)/);
-});
-
-const mockRegexDataGlobal = {
-    settings: {
-        template: '(values)',
-        flags: 'g'
-    },
-    values: [
-        '1',
-        '2'
-    ]
-};
-
-test('RegExpress correctly adds a global flag when specified in the settings object', () => {
-    let rb = new RegexBuilder(mockPlaceholderSubs);
-
-    expect(rb.buildRegex(mockRegexDataGlobal)).toEqual(/(1|2)/g);
-});
-
-const mockRegexDataTwo = {
-    settings: {
-        template: '(?:field_name)[: ]+(field_values)',
-        flags: ''
-    },
-    field_name: [
-        'n1',
-        'n2'
+    two: [
+        '2',
+        '3'
     ],
-    field_values: [
-        'v1',
-        'v2'
+    three: [
+        '3',
+        '4'
     ]
 };
 
-test('RegExpress correctly leaves non-array groups just the way they are', () => {
-    let rb = new RegexBuilder(mockPlaceholderSubs);
+const settingsMulti = {
+    template: '(one)(two)(three)',
+    flags: ''
+};
 
-    expect(rb.buildRegex(mockRegexDataTwo)).toEqual(/(?:n1|n2)[: ]+(v1|v2)/);
+
+
+const mockPlaceholder = {
+    placeholder: ['p1', 'p2', 'p3']
+}
+
+const mockRegexDataWithNoPlaceholder = {
+    values: [
+        '1',
+        '2'
+    ]
+};
+
+const mockRegexDataWithPlaceholder = {
+    values: [
+        '~~placeholder~~',
+        '1',
+        '2'
+    ]
+};
+
+const mockRegexDataWithUndefinedPlaceholder = {
+    values: [
+        '~~holdplacer~~',
+        '1',
+        '2'
+    ]
+};
+
+describe('regex builder logic tests', () => {
+
+    it('should be possible to instantiate without passing any placeholders', () => {
+        expect(new TemplateBuilder(mockRegexDataWithNoPlaceholder, mockSettings).build())
+            .to.deep.equal(/(1|2)/);
+    });
+
+    it('should create regex /(1|2)/ from template "(values)" and object { values: ["1", "2"] }', () => {
+        expect(new TemplateBuilder(mockRegexData, mockSettings).build())
+            .to.deep.equal(/(1|2)/);
+    });
+
+    it('should arrange template groups properly: template (one)(two)(three) => /(1|2)(2|3)(3|4)/', () => {
+        expect(new TemplateBuilder(mockRegexDataMulti, settingsMulti).build())
+            .to.deep.equal(/(1|2)(2|3)(3|4)/);
+    });
+    
+    it('should substitute a placeholder with syntax ~~name~~ wih the correct values', () => {
+        expect(new TemplateBuilder(mockRegexDataWithPlaceholder, mockSettings, mockPlaceholder).build())
+            .to.deep.equal(/(p1|p2|p3|1|2)/)
+    });
+
+    it('should throw an error when an undefined placeholder is encountered', () => {
+        expect(() => new TemplateBuilder(mockRegexDataWithUndefinedPlaceholder, mockSettings, mockPlaceholder).build())
+            .to.throw('found undefined placeholder ~~holdplacer~~ in regex data');
+    });
+  
 });
-
