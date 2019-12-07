@@ -22,7 +22,7 @@ export abstract class RegexBuilderBase {
     }
 
     protected _buildGroup(group: string[] | string) : string {
-        return (Array.isArray(group)) ? group.join(this._settings.symbol || '|') : group;
+        return (Array.isArray(group)) ? group.join(this._settings.separator || '|') : group;
     }
 
     protected _substitutePlaceholder(group: string) : string {
