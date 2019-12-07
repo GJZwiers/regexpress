@@ -16,4 +16,8 @@ export class Regexpress {
     mapTemplate(results: RegExpMatchArray | null, template: string) {
         return TemplateMapper.map(results, template);
     }
+
+    setArrayJoins() {
+        
+    }
 }
