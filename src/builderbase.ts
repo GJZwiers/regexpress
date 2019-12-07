@@ -1,11 +1,11 @@
-import { RXData, RXSettings, RXPlaceholder } from './IRegex';
+import { RXData, RXPlaceholder, RXSettingsBase } from './IRegex';
 
-export class RegexBuilderBase {
+export abstract class RegexBuilderBase {
     protected _regexData: RXData;
-    protected _settings: RXSettings;
+    protected _settings: RXSettingsBase;
     protected _placeholderData: RXPlaceholder ;
 
-    constructor(regexData: RXData, settings: RXSettings, placeholders?: RXPlaceholder) {
+    constructor(regexData: RXData, settings: RXSettingsBase, placeholders?: RXPlaceholder) {
         this._regexData = regexData;
         this._settings = settings;  
         this._placeholderData = placeholders || {};

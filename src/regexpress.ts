@@ -1,4 +1,4 @@
-import { TemplateBuilder, TemplateListBuilder, RXData, RXSettings, RXPlaceholder } from './index';
+import { TemplateBuilder, TemplateListBuilder, RXData, RXSettings, RXListSettings, RXPlaceholder } from './index';
 import { TemplateMapper } from './templatemapper';
 
 export class Regexpress {
@@ -9,8 +9,8 @@ export class Regexpress {
         return new TemplateBuilder(RXData, RXSettings, RXPlaceholder).build();
     }
 
-    buildRegexes(RXData: RXData, RXSettings: RXSettings, RXPlaceholder?: RXPlaceholder) {
-        return new TemplateListBuilder(RXData, RXSettings, RXPlaceholder).build();
+    buildRegexes(RXData: RXData, RXListSettings: RXListSettings, RXPlaceholder?: RXPlaceholder) {
+        return new TemplateListBuilder(RXData, RXListSettings, RXPlaceholder).build();
     }
 
     mapTemplate(results: RegExpMatchArray | null, template: string) {
