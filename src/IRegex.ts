@@ -8,7 +8,7 @@ export interface RXPlaceholder {
 
 export interface RXSettingsBase {
     flags: string
-    symbol?: string
+    separator?: string
 }
 
 export interface RXSettings extends RXSettingsBase {
