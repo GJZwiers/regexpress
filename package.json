@@ -27,15 +27,11 @@
   },
   "homepage": "https://github.com/GJZwiers/RegExpress#readme",
   "type": "module",
-  "dependencies": {
-    "@types/node": "^12.12.14",
-    "esm": "^3.2.25",
-    "js-yaml": "^3.13.1",
-    "node": "^13.1.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/chai": "^4.2.4",
     "@types/mocha": "^5.2.7",
+    "@types/node": "^12.12.14",
     "chai": "^4.2.0",
     "mocha": "^6.2.2",
     "rewire": "^4.0.1",
