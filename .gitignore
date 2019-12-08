@@ -1,7 +1,5 @@
 /node_modules
-/test
 /dist
-test.ts
 RegexBuilder.php
 RegexBuilderTest.php
 .gitignore

@@ -23,7 +23,7 @@ const settings = {
 const regex = rxp.buildRegex(regexData, settings);
 ```
 The above builds the pattern: ```/\d{1,4} (ml|cl|l)/i``` in the following steps:
- * Arrays of strings are joined with pipe symbols by default or with a separator property with a custom string.
+ * Arrays of strings are joined with pipe symbols by default
 to create alternates:
 ```javascript
 ['ml', 'cl', 'l'] -> 'ml|cl|l'
