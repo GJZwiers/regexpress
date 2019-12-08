@@ -1,20 +1,19 @@
-import { TemplateBuilder, TemplateListBuilder, RXData, RXSettings, RXListSettings, RXPlaceholder } from './index';
-import { TemplateMapper } from './templatemapper';
+import * as rxp from './index';
 
 export class Regexpress {
 
     constructor() {}
 
-    buildRegex(RXData: RXData, RXSettings: RXSettings, RXPlaceholder?: RXPlaceholder) {
-        return new TemplateBuilder(RXData, RXSettings, RXPlaceholder).build();
+    buildRegex(RXData: rxp.RXData, RXSettings: rxp.RXSettings, RXPlaceholder?: rxp.RXPlaceholder) {
+        return new rxp.TemplateBuilder(RXData, RXSettings, RXPlaceholder).build();
     }
 
-    buildRegexes(RXData: RXData, RXListSettings: RXListSettings, RXPlaceholder?: RXPlaceholder) {
-        return new TemplateListBuilder(RXData, RXListSettings, RXPlaceholder).build();
+    buildRegexes(RXData: rxp.RXData, RXListSettings: rxp.RXListSettings, RXPlaceholder?: rxp.RXPlaceholder) {
+        return new rxp.TemplateListBuilder(RXData, RXListSettings, RXPlaceholder).build();
     }
 
     mapTemplate(results: RegExpMatchArray | null, template: string) {
-        return TemplateMapper.map(results, template);
+        return rxp.TemplateMapper.map(results, template);
     }
     
 }
