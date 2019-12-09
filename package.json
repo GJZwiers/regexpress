@@ -27,7 +27,9 @@
   },
   "homepage": "https://github.com/GJZwiers/RegExpress#readme",
   "type": "module",
-  "dependencies": {},
+  "dependencies": {
+    "esm": "^3.2.25"
+  },
   "devDependencies": {
     "@types/chai": "^4.2.4",
     "@types/mocha": "^5.2.7",
@@ -37,5 +39,12 @@
     "rewire": "^4.0.1",
     "ts-node": "^8.4.1",
     "typescript": "^3.6.4"
-  }
+  },
+  "files": [
+    "/dist",
+    "/src",
+    "/node_modules",
+    "README",
+    "LICENSE"
+  ]
 }
