@@ -33,7 +33,6 @@ export class TemplateListBuilder extends RegexBuilderBase {
     }
 
     public build() : Array<AugmentedExp> {
-        if (!this._settings.templateList) throw new Error('templateList must be defined');
         const regexList: Array<AugmentedExp> = [];
         for (let template of this._settings.templateList) {
             const regexString = this._buildTemplate(template);
@@ -44,7 +43,6 @@ export class TemplateListBuilder extends RegexBuilderBase {
     }
 
     private _buildRegex(regexString: string, template: string) : AugmentedExp {
-        if (!this._settings.templateList) throw new Error('templateList must be defined');
         return new AugmentedExp(regexString, this._settings.flags, template);
     }
 
