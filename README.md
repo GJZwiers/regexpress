@@ -22,7 +22,7 @@ const settings = {
 
 const regex = rxp.buildRegex(regexData, settings);
 ```
-The above builds the pattern: ```/\d{1,4} (ml|cl|l)/i``` in the following steps:
+The above builds the pattern: ```/(\d{1,4}) (ml|cl|l)/i``` in the following steps:
  * Arrays of strings are joined with pipe symbols by default
 to create alternates:
 ```javascript
@@ -39,6 +39,22 @@ with the specified flag(s):
 '(\\d{1,4}) (ml|cl|l)' -> /(\d{1,4}) (ml|cl|l)/i
 ```
 
+A custom separator can be defined by adding a separator field to the settings:
+
+```javascript
+const regexData = {
+    keywords: ['one', 'two', 'three']
+};
+
+const settings = {
+    template: 'keywords',
+    flags: '',
+    separator: '.+'
+};
+
+const regex = rxp.buildRegex(regexData, settings); -> /one.+two.+three/
+```
+
 Regexpress can be helpful in scenarios where you want to match data coming in a high variety of different notations but with similar meaning. Suppose you want to match volume data which can come as either a single value, a min-max range or a limit value (e.g. > 100). With Regexpress you can declare a list of templates for each of these:
 
  ```javascript
@@ -49,30 +65,30 @@ Regexpress can be helpful in scenarios where you want to match data coming in a 
             '(volume) (unit)',                      // Single
             ],
             flags: 'i'
-    },
+    };
 
     const regexData = {
         volume: '\\d{1,4}',
         unit: ['ml', 'cl', 'l'],
-    }
+    };
 
     const regexes = rxp.buildRegexes(regexData, settings);
 
     /* 
     Will build array of patterns: [
-        /(\d{1,4})(ml|cl|l)/i,
+        /(\d{1,4})(ml|cl|l)[- ]+(\d{1,4})(ml|cl|l)/i,
         /[>< ]+(\d{1,4})(ml|cl|l)/i,
-        /(\d{1,4})(ml|cl|l)[- ]+(\d{1,4})(ml|cl|l)/i
+        /(\d{1,4})(ml|cl|l)/i 
     ] 
     */
 ```
 
-Regexpress extends the RegExp object with the template string. After matching the list of matches can be mapped to an object with the named groups being the keys:
+Patterns built using Regexpress contain the template string as a property, which can be used to map the matches array to an object with the named groups being the keys:
 
 ```javascript
-const textData = '100 ml';
-// template: '(volume) (unit)'
-const matches = textData.match(regex);
+const volumeData = '100 ml';
+// regex: /(\d{1,4}) (ml|cl|l)/i, template: '(volume) (unit)'
+const matches = volumeData.match(regex);
 // matches: [ '100 ml', '100', 'ml']
 const map = rxp.mapTemplate(matches, regex.getTemplate()); 
 // map: { fullMatch: '100 ml', volume: '100', unit: 'ml' }
@@ -126,4 +142,3 @@ node -r esm filename.js
 
 ```
 
-Future releases will include support for bringing in data from more formats, e.g. databases, CSV, XML, YAML, etc.
