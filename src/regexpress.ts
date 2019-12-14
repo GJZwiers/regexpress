@@ -4,6 +4,10 @@ export class Regexpress {
 
     constructor() {}
 
+    autoSort(RXData: rxp.RXData, RXSettings: rxp.RXSettings, RXPlaceholder?: rxp.RXPlaceholder) {
+        return new rxp.TemplateBuilder(RXData, RXSettings, RXPlaceholder).autoSort();
+    }
+
     buildRegex(RXData: rxp.RXData, RXSettings: rxp.RXSettings, RXPlaceholder?: rxp.RXPlaceholder) {
         return new rxp.TemplateBuilder(RXData, RXSettings, RXPlaceholder).build();
     }

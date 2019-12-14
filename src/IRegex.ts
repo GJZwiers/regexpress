@@ -9,6 +9,7 @@ export interface RXPlaceholder {
 export interface RXSettingsBase {
     flags: string
     separator?: string
+    autosort?: boolean
 }
 
 export interface RXSettings extends RXSettingsBase {

@@ -93,3 +93,33 @@ describe('regex builder logic tests', () => {
     });
   
 });
+
+const regexDataAutoSortMock = {
+    literalQuants: [
+        'a{1}',
+        'b{1}',
+        'c{1,100}'
+    ]
+};
+
+const autoSortSettingsMock = {
+    template: '(literalQuants)',
+    flags: ''
+};
+
+describe('regex counter tests', () => {
+
+    it('should sum up regex literal quantifiers', () => {
+        expect(
+            new TemplateBuilder(regexDataAutoSortMock, autoSortSettingsMock).autoSort()
+        ).to.deep.equal(['c{1,100}','a{1}','b{1}']);
+    });
+  
+});
+
+    // metaQuantifiers: [
+    //     '\\d+',
+    //     '\\d*',
+    //     'a+',
+    //     'a*'
+    // ]

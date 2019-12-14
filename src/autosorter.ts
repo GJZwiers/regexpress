@@ -1,0 +1,3 @@
+interface IRegexListSorter {
+    sortArray() : string[];
+}
