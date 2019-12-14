@@ -1,6 +1,7 @@
 import { RXData, RXPlaceholder, RXSettingsBase } from './IRegex';
+import { TemplateMapper } from './templatemapper';
 
-// perform sorting on regex data before build methods
+// perform sorting on regex data before build methods?
 
 export abstract class RegexBuilderBase {
     protected _regexData: RXData;
@@ -24,7 +25,6 @@ export abstract class RegexBuilderBase {
     }
 
     public autoSort() {
-        console.log('started auto sort');
         for (const namedGroup in this._regexData) {
             if (this._isAutoSortable(this._regexData[namedGroup])) {
                 this._sortGroup(<string[]> this._regexData[namedGroup]);
@@ -38,32 +38,64 @@ export abstract class RegexBuilderBase {
                 && this._settings.separator === ('|' || undefined));
     }
 
+    // sort metas descending min length
     protected _sortGroup(group: string[]) : string[] {
-        console.log('unsorted', group);
-        group.sort((a: string, b: string) => {
+        const metaList: string[] = group.filter((element, index) => {
+            return /(?!\\)(?:\*|\+)/.test(element);
+        });
+
+        const litList: string[] = group.filter((element, index) => {
+            return /(?!\\)(?:\*|\+)/.test(element) === false;
+        });
+
+        metaList.sort((a: string, b: string) => {
+            const first = this._calculateMinMatchLength(a);
+            const second = this._calculateMinMatchLength(b);
+            return second - first;
+        });
+        
+        litList.sort((a: string, b: string) => {
             const first = this._calculateMaxMatchLength(a);
             const second = this._calculateMaxMatchLength(b);
-            console.log(first, second);
             return second - first;
         });
 
-        console.log('sorted', group);
-        return group;
+        const allSorted = metaList.concat(litList);
+        console.log(allSorted);
+
+        return allSorted;
     }
 
-    // {n} {n,m} +* ?
-    // recursive quantifier match
-    // if found add amount to sum and call match again from lastIndex;
+    protected _calculateMinMatchLength(regexString: string) : number {
+        const countables = /\w+|(?=\\)[?+*$^{}()\[\]\\]/g
+        let total = 0;
+
+        const includeInCount = regexString.match(countables);
+        console.log(includeInCount);
+
+        if (includeInCount !== null) {
+            for (const match of includeInCount) {
+                total += match.length;
+            }
+            return total;
+        }
+
+        return 1;
+    }
+
+    // if * or + present theoretical limit is infinite -> sort these by minimum amount instead (10 -> inf, 2 -> inf, 10-28, 7)
 
     protected _calculateMaxMatchLength(regexString: string) : number {
         const quantPattern = /.\{(\d+),?\s?(\d+)?\}/;
-        const matches = regexString.match(quantPattern);
-
-        if (!matches) return 0;
 
         let total = 0;
-        total += (matches[2] !== undefined) ?  parseInt(matches[2]) : parseInt(matches[1]);
 
+        const finiteQuants = regexString.match(quantPattern);
+        if (finiteQuants !== null) {
+            const map: any = TemplateMapper.map(finiteQuants, '(minrange)(maxrange)');
+            total += (map.maxrange !== undefined) ? parseInt(map.maxrange) : parseInt(map.minrange);
+        }
+        
         return total;
     }
 
