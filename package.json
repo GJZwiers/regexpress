@@ -31,14 +31,14 @@
     "esm": "^3.2.25"
   },
   "devDependencies": {
-    "@types/chai": "^4.2.4",
+    "@types/chai": "^4.2.7",
     "@types/mocha": "^5.2.7",
-    "@types/node": "^12.12.14",
+    "@types/node": "^12.12.17",
     "chai": "^4.2.0",
     "mocha": "^6.2.2",
     "rewire": "^4.0.1",
-    "ts-node": "^8.4.1",
-    "typescript": "^3.6.4"
+    "ts-node": "^8.5.4",
+    "typescript": "^3.7.3"
   },
   "files": [
     "/dist",
