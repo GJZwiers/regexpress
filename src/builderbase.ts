@@ -3,7 +3,7 @@ import { RXData, RXPlaceholder, RXSettingsBase } from './IRegex';
 export abstract class RegexBuilderBase {
     protected _regexData: RXData;
     protected _settings: RXSettingsBase;
-    protected _placeholderData: RXPlaceholder ;
+    protected _placeholderData: RXPlaceholder;
 
     constructor(regexData: RXData, settings: RXSettingsBase, placeholders?: RXPlaceholder) {
         this._regexData = regexData;
@@ -13,8 +13,8 @@ export abstract class RegexBuilderBase {
 
     protected _buildTemplate(template: string) : string {
         for (const namedGroup in this._regexData) {
-            let builtGroup = this._buildGroup(this._regexData[namedGroup]);
-            let subbedGroup = this._substitutePlaceholder(builtGroup);
+            const builtGroup = this._buildGroup(this._regexData[namedGroup]);
+            const subbedGroup = this._substitutePlaceholder(builtGroup);
             template = template.replace(new RegExp(`${namedGroup}(?=\\W)`, 'g'), subbedGroup);
         }
         
@@ -26,12 +26,10 @@ export abstract class RegexBuilderBase {
     }
 
     protected _substitutePlaceholder(group: string) : string {
-        const swap = (match: string, p1: string) => {
-            if (!this._placeholderData[p1]) throw new Error(`found undefined placeholder ${match} in regex data`);
+        return group.replace(/~~(\w+)~~/, (match: string, p1: string) => {
+            if (!this._placeholderData[p1]) throw new Error(`undefined placeholder ${match} in regex data`);
             return this._buildGroup(this._placeholderData[p1]);
-        };
-
-        return group.replace(/~~(\w+)~~/, swap);
+        });
     }
 
 }

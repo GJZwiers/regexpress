@@ -1,4 +1,4 @@
-import { TemplateBuilder } from '../src/index';
+import { TemplateBuilder, AutoSorter, Regexpress } from '../src/index';
 
 import * as mocha from  'mocha';
 import * as chai from 'chai';
@@ -89,7 +89,62 @@ describe('regex builder logic tests', () => {
 
     it('should throw an error when an undefined placeholder is encountered', () => {
         expect(() => new TemplateBuilder(mockRegexDataWithUndefinedPlaceholder, mockSettings, mockPlaceholder).build())
-            .to.throw('found undefined placeholder ~~holdplacer~~ in regex data');
+            .to.throw('undefined placeholder ~~holdplacer~~ in regex data');
+    });
+  
+});
+
+const regexDataAutoSortMock = {
+    Quantifiers: [
+        'a{1}',
+        'a{3}fb*c{1,10}',
+        'd*abc+f{2}',
+        'c{1,100}',
+        'd{5, 17}',
+        'e{5}',
+        'abc+',
+        'a+'
+    ]
+};
+
+const autoSortSettingTrueMock = {
+    template: '(Quantifiers)',
+    flags: '',
+    autosort: true,
+    separator: '|'
+};
+
+const autoSortSettingFalseMock = {
+    template: '(Quantifiers)',
+    flags: '',
+    autosort: false,
+    separator: '|'
+};
+
+describe('autosorter tests', () => {
+    
+    it('should sort from data with autosort setting = true', () => {
+        expect(new Regexpress().buildRegex(regexDataAutoSortMock, autoSortSettingFalseMock))
+            .to.deep.equal(/(a{1}|a{3}fb*c{1,10}|d*abc+f{2}|c{1,100}|d{5, 17}|e{5}|abc+|a+)/);
+    });
+
+    it('should not sort from data with autosort setting = false', () => {
+        expect(new Regexpress().buildRegex(regexDataAutoSortMock, autoSortSettingTrueMock))
+            .to.deep.equal(/(a{3}fb*c{1,10}|d*abc+f{2}|abc+|a+|c{1,100}|d{5, 17}|e{5}|a{1})/);
+    });
+
+    it('should sort from code after direct call to autoSort method', () => {
+        expect(new AutoSorter(regexDataAutoSortMock).autoSort())
+            .to.deep.equal({ Quantifiers: [
+            'a{3}fb*c{1,10}',
+            'd*abc+f{2}',
+            'abc+',
+            'a+',
+            'c{1,100}',
+            'd{5, 17}',
+            'e{5}',
+            'a{1}'
+        ]});
     });
   
 });

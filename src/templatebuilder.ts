@@ -2,10 +2,6 @@ import { AugmentedExp } from './augmentedExp';
 import { RegexBuilderBase } from './builderbase';
 import { RXListSettings, RXSettings, RXData, RXPlaceholder } from './IRegex';
 
-interface Buildable {
-    build() : RegExp;
-}
-
 export class TemplateBuilder extends RegexBuilderBase {
     protected _settings: RXSettings;
 
