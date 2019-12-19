@@ -1,7 +1,7 @@
 import { RXData } from "./IRegex";
 import { TemplateMapper } from "./templatemapper";
 
-interface IRegexListSorter {
+interface IRXStringListSorter {
     autoSort(): RXData
 }
 
@@ -10,14 +10,14 @@ interface RegexDto {
     nonQuant: RegExp
 }
 
-export class AutoSorter {
+export class AutoSorter implements IRXStringListSorter {
     private readonly _regexData: RXData;
 
     constructor(regexData: RXData) {
         this._regexData = regexData;
     }
 
-    public autoSort() {
+    public autoSort() : RXData {
         let sortedData: RXData = {};
         for (const namedGroup in this._regexData) {
             if (!this._isAutoSortable(this._regexData[namedGroup])) 
@@ -29,11 +29,11 @@ export class AutoSorter {
         return sortedData;
     }
 
-    protected _isAutoSortable(group: string[] | string) {
+    private _isAutoSortable(group: string[] | string) {
         return (Array.isArray(group));
     }
 
-    protected _sortGroup(group: string[]) : string[] {
+    private _sortGroup(group: string[]) : string[] {
         const regexes: RegexDto = {
             quant: /.\{(\d+),?\s?(\d+)?\}/g,
             nonQuant: /(?!<=\{)\w+(?!\{|.+\}[}{*+])|(?=\\)[?+*$^{}()\[\]\\]/g
@@ -58,7 +58,7 @@ export class AutoSorter {
         return patternsWithMetas.concat(patternsWithLiterals);
     }
 
-    protected _getLargestMatchLength(regexString: string, patterns: RegexDto) : number {
+    private _getLargestMatchLength(regexString: string, patterns: RegexDto) : number {
         let total = 0;
 
         const matches = regexString.replace(patterns.quant, (match, min, max) => {
@@ -78,12 +78,7 @@ export class AutoSorter {
         return total;
     }
 
-    protected _addQuant(match: RegExpMatchArray) : number {
-        const map: any = TemplateMapper.map(match, '(minrange)(maxrange)');
-        return (map.maxrange !== undefined) ? parseInt(map.maxrange) : parseInt(map.minrange);
-    }
-
-    protected _addNonQuant(match: RegExpMatchArray) : number {
+    private _addNonQuant(match: RegExpMatchArray) : number {
         const map: any = TemplateMapper.map(match, '');
         return map.fullMatch.length;
     }

@@ -1,4 +1,4 @@
-Regexpress creates regex patterns from data using template strings. Templates can be 
+Regexpress creates regex patterns from data by declaring templates. These can be 
 specified in a settings object and accompanied by a data object.
 
 Usage:

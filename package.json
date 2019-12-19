@@ -1,7 +1,7 @@
 {
   "name": "regexpress",
   "version": "3.1.1",
-  "description": "Regexpress creates regex patterns from data using template strings.",
+  "description": "Regexpress creates regex patterns from data using templates.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "prepublish": "tsc",

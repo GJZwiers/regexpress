@@ -4,8 +4,11 @@ interface RegexMap {
 
 export class TemplateMapper {
     static map(results: RegExpMatchArray | null, template: string) : object {
-        if (results === null) throw new Error('cannot map null matches');
-        if (/\((\w+)\).+\1\W/.test(template)) throw new Error('identical name in template string');
+        if (results === null) 
+            throw new Error('cannot map null matches');
+        if (/\((\w+)\).+\1\W/.test(template)){
+            throw new Error('identical name in template string');
+        }
         
         let map: RegexMap = { fullMatch: results[0] };
 

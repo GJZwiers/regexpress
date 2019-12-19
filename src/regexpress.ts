@@ -1,4 +1,5 @@
 import * as rxp from './index';
+import { RXSetting, RXSingle, RXList } from './builderbase';
 
 export class Regexpress {
 
@@ -8,20 +9,24 @@ export class Regexpress {
         return new rxp.AutoSorter(RXData).autoSort();
     }
 
-    buildRegex(RXData: rxp.RXData, RXSettings: rxp.RXSettings, RXPlaceholder?: rxp.RXPlaceholder) {
-        if (this._isAutoSortable(RXSettings)) {
+    buildRegex(RXData: rxp.RXData, RXSettings: RXSetting, RXPlaceholder?: rxp.RXPlaceholder) {
+        if (this._isAutoSortable(RXSettings))
             RXData = this.autoSort(RXData);
-        }
         
         return new rxp.TemplateBuilder(RXData, RXSettings, RXPlaceholder).build();
     }
 
-    buildRegexes(RXData: rxp.RXData, RXListSettings: rxp.RXListSettings, RXPlaceholder?: rxp.RXPlaceholder) {
-        if (this._isAutoSortable(RXListSettings)) {
+    buildRegexes(RXData: rxp.RXData, RXListSettings: RXSetting, RXPlaceholder?: rxp.RXPlaceholder) {
+        if (this._isAutoSortable(RXListSettings))
             RXData = this.autoSort(RXData);
-        }
 
-        return new rxp.TemplateListBuilder(RXData, RXListSettings, RXPlaceholder).build();
+        return new rxp.TemplateBuilder(RXData, RXListSettings, RXPlaceholder).buildList();
+    }
+
+    buildAll(regexes: object) {
+        for (const field in regexes) {
+            //field.buildRegex(field.data, field.settings, field.placeholders);
+        }
     }
 
     private _isAutoSortable(RXSettings: rxp.RXSettings | rxp.RXListSettings) {
