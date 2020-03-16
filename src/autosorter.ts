@@ -1,4 +1,4 @@
-import { RXData } from "./IRegex";
+import { RXData } from "./rxtypes";
 import { TemplateMapper } from "./templatemapper";
 
 interface IRXStringListSorter {
@@ -33,6 +33,7 @@ export class AutoSorter implements IRXStringListSorter {
         return (Array.isArray(group));
     }
 
+    // To-do: differentiate between * and + chars maxlength
     private _sortGroup(group: string[]) : string[] {
         const regexes: RegexDto = {
             quant: /.\{(\d+),?\s?(\d+)?\}/g,
@@ -40,25 +41,23 @@ export class AutoSorter implements IRXStringListSorter {
         };
 
         const sortLogic = (a: string, b: string) => {
-            return this._getLargestMatchLength(b, regexes) - this._getLargestMatchLength(a, regexes);
+            return this._maxMatchLength(b, regexes) - this._maxMatchLength(a, regexes);
         };
 
-        const patternsWithMetas: string[] = group.filter(element => {
-            return /(?!\\)(?:\*|\+)/.test(element);
-        });
+        const metaQuants = /(?!\\)(?:\*|\+)/;
 
-        patternsWithMetas.sort(sortLogic);
+        const patternsWithMetas: string[] = group
+            .filter(element => { return metaQuants.test(element) === true;})
+            .sort(sortLogic);
 
-        const patternsWithLiterals: string[] = group.filter(element => {
-            return /(?!\\)(?:\*|\+)/.test(element) === false;
-        });
-
-        patternsWithLiterals.sort(sortLogic);
+        const patternsWithLiterals: string[] = group
+            .filter(element => { return metaQuants.test(element) === false;})
+            .sort(sortLogic);
 
         return patternsWithMetas.concat(patternsWithLiterals);
     }
 
-    private _getLargestMatchLength(regexString: string, patterns: RegexDto) : number {
+    private _maxMatchLength(regexString: string, patterns: RegexDto) : number {
         let total = 0;
 
         const matches = regexString.replace(patterns.quant, (match, min, max) => {

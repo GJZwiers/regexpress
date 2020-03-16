@@ -1,6 +1,7 @@
 import * as rxp from './index';
-import { RXSetting, RXSingle, RXList } from './builderbase';
+import { RXSettings } from './rxtypes';
 
+// Façade
 export class Regexpress {
 
     constructor() {}
@@ -9,27 +10,21 @@ export class Regexpress {
         return new rxp.AutoSorter(RXData).autoSort();
     }
 
-    buildRegex(RXData: rxp.RXData, RXSettings: RXSetting, RXPlaceholder?: rxp.RXPlaceholder) {
+    buildRegex(RXData: rxp.RXData, RXSettings: RXSettings, RXPlaceholder?: rxp.RXPlaceholder) {
         if (this._isAutoSortable(RXSettings))
             RXData = this.autoSort(RXData);
         
         return new rxp.TemplateBuilder(RXData, RXSettings, RXPlaceholder).build();
     }
 
-    buildRegexes(RXData: rxp.RXData, RXListSettings: RXSetting, RXPlaceholder?: rxp.RXPlaceholder) {
+    buildRegexes(RXData: rxp.RXData, RXListSettings: RXSettings, RXPlaceholder?: rxp.RXPlaceholder) {
         if (this._isAutoSortable(RXListSettings))
             RXData = this.autoSort(RXData);
 
         return new rxp.TemplateBuilder(RXData, RXListSettings, RXPlaceholder).buildList();
     }
 
-    buildAll(regexes: object) {
-        for (const field in regexes) {
-            //field.buildRegex(field.data, field.settings, field.placeholders);
-        }
-    }
-
-    private _isAutoSortable(RXSettings: rxp.RXSettings | rxp.RXListSettings) {
+    private _isAutoSortable(RXSettings: RXSettings) {
         return (RXSettings.autosort && RXSettings.separator === ('|' || undefined));
     }
 
