@@ -1,5 +1,6 @@
-Regexpress creates regex patterns from data using template strings. Templates can be 
-specified in a settings object and accompanied by a data object.
+Note: This package is undergoing some naming changes. The codebase and readme will be be updated soon.
+
+Reno creates regular expressions from JavaScript objects using template strings.
 
 Usage:
 
@@ -55,7 +56,7 @@ const settings = {
 const regex = rxp.buildRegex(regexData, settings); -> /one.+two.+three/
 ```
 
-Regexpress can be helpful in scenarios where you want to match data coming in a high variety of different notations but with similar meaning. Suppose you want to match volume data which can come as either a single value, a min-max range or a limit value (e.g. > 100). With Regexpress you can declare a list of templates for each of these:
+Reno can be helpful in scenarios where you want to match data coming in a high variety of different notations but with similar meaning. Suppose you want to match volume data which can come as either a single value, a min-max range or a limit value (e.g. > 100). With Reno you can declare a list of templates for each of these:
 
  ```javascript
     const settings = {
