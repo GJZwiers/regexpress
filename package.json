@@ -1,7 +1,7 @@
 {
   "name": "regexpress",
   "version": "3.1.2",
-  "description": "Regexpress creates regex patterns from data using template strings.",
+  "description": "Regexpress creates regex patterns from data using template strings",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "prepublish": "tsc",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/GJZwiers/RegExpress.git"
+    "url": "git+https://github.com/GJZwiers/Reno.git"
   },
   "keywords": [
     "regex",
