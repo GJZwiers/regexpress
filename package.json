@@ -34,7 +34,7 @@
     "@types/node": "^12.12.30",
     "chai": "^4.2.0",
     "filehound": "^1.17.4",
-    "mocha": "^6.2.2",
+    "mocha": "^8.0.1",
     "rewire": "^4.0.1",
     "ts-node": "^8.6.2",
     "typescript": "^3.8.3"
