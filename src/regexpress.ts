@@ -1,6 +1,6 @@
 import * as Regexp from './index';
 
-export class Reno {
+export class Regexpress {
 
     constructor() {}
 

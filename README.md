@@ -4,9 +4,9 @@ specified in a settings object and accompanied by a data object.
 Usage:
 
 ```javascript
-import { Reno } from 'reno';
+import { Regexpress } from 'regexpress';
 
-const reno = new Reno();
+const rxp = new Regexpress();
 ```
 
 ```javascript
