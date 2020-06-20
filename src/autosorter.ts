@@ -1,9 +1,5 @@
-import { RXData } from "./IRegex";
+import { RegexData } from "./IRegex";
 import { TemplateMapper } from "./templatemapper";
-
-interface IRegexListSorter {
-    autoSort(): RXData
-}
 
 interface RegexDto {
     quant: RegExp,
@@ -11,14 +7,14 @@ interface RegexDto {
 }
 
 export class AutoSorter {
-    private readonly _regexData: RXData;
+    private readonly _regexData: RegexData;
 
-    constructor(regexData: RXData) {
+    constructor(regexData: RegexData) {
         this._regexData = regexData;
     }
 
     public autoSort() {
-        let sortedData: RXData = {};
+        let sortedData: RegexData = {};
         for (const namedGroup in this._regexData) {
             if (!this._isAutoSortable(this._regexData[namedGroup])) 
                 continue;

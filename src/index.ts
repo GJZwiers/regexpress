@@ -1,5 +1,4 @@
-export { RegexBuilder } from './regexbuilder';
-export { RXData, RXSettings, RXListSettings, RXPlaceholder } from './IRegex';
+export { RegexData, RegexSettings, RegexListSettings, RegexPlaceholder } from './IRegex';
 export { TemplateBuilder, TemplateListBuilder} from './templatebuilder';
 export { TemplateMapper } from './templatemapper';
 export { AugmentedExp } from './augmentedExp';

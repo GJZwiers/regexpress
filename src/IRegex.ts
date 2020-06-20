@@ -1,21 +1,21 @@
-export interface RXData {
+export interface RegexData {
     [key: string]: string[] | string
 }
 
-export interface RXPlaceholder {
+export interface RegexPlaceholder {
     [key: string]: string[]
 }
 
-export interface RXSettingsBase {
+export interface RegexSettingsBase {
     flags: string
     separator?: string
     autosort?: boolean
 }
 
-export interface RXSettings extends RXSettingsBase {
+export interface RegexSettings extends RegexSettingsBase {
     template: string
 }
 
-export interface RXListSettings extends RXSettingsBase {
+export interface RegexListSettings extends RegexSettingsBase {
     templateList: string[]
 }

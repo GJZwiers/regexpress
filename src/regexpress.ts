@@ -1,35 +1,35 @@
-import * as rxp from './index';
+import * as Regexp from './index';
 
 export class Regexpress {
 
     constructor() {}
 
-    autoSort(RXData: rxp.RXData) {
-        return new rxp.AutoSorter(RXData).autoSort();
+    autoSort(RegexData: Regexp.RegexData) {
+        return new Regexp.AutoSorter(RegexData).autoSort();
     }
 
-    buildRegex(RXData: rxp.RXData, RXSettings: rxp.RXSettings, RXPlaceholder?: rxp.RXPlaceholder) {
-        if (this._isAutoSortable(RXSettings)) {
-            RXData = this.autoSort(RXData);
+    buildRegex(RegexData: Regexp.RegexData, RegexSettings: Regexp.RegexSettings, RegexPlaceholder?: Regexp.RegexPlaceholder) {
+        if (this._isAutoSortable(RegexSettings)) {
+            RegexData = this.autoSort(RegexData);
         }
         
-        return new rxp.TemplateBuilder(RXData, RXSettings, RXPlaceholder).build();
+        return new Regexp.TemplateBuilder(RegexData, RegexSettings, RegexPlaceholder).build();
     }
 
-    buildRegexes(RXData: rxp.RXData, RXListSettings: rxp.RXListSettings, RXPlaceholder?: rxp.RXPlaceholder) {
-        if (this._isAutoSortable(RXListSettings)) {
-            RXData = this.autoSort(RXData);
+    buildRegexes(RegexData: Regexp.RegexData, RegexListSettings: Regexp.RegexListSettings, RegexPlaceholder?: Regexp.RegexPlaceholder) {
+        if (this._isAutoSortable(RegexListSettings)) {
+            RegexData = this.autoSort(RegexData);
         }
 
-        return new rxp.TemplateListBuilder(RXData, RXListSettings, RXPlaceholder).build();
+        return new Regexp.TemplateListBuilder(RegexData, RegexListSettings, RegexPlaceholder).build();
     }
 
-    private _isAutoSortable(RXSettings: rxp.RXSettings | rxp.RXListSettings) {
-        return (RXSettings.autosort && RXSettings.separator === ('|' || undefined));
+    private _isAutoSortable(RegexSettings: Regexp.RegexSettings | Regexp.RegexListSettings) {
+        return (RegexSettings.autosort && RegexSettings.separator === ('|' || undefined));
     }
 
     mapTemplate(results: RegExpMatchArray | null, template: string) {
-        return rxp.TemplateMapper.map(results, template);
+        return Regexp.TemplateMapper.map(results, template);
     }
     
 }

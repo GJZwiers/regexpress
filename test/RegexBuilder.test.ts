@@ -1,9 +1,6 @@
 import { TemplateBuilder, AutoSorter, Regexpress } from '../src/index';
 
-import * as mocha from  'mocha';
-import * as chai from 'chai';
-
-const expect = chai.expect;
+import {expect } from 'chai';
 
 const mockRegexData = {
     values: [

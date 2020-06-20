@@ -1,7 +1,4 @@
-import * as mocha from  'mocha';
-import * as chai from 'chai';
-
-const expect = chai.expect;
+import { expect }  from 'chai';
 
 import { TemplateMapper } from '../src/index';
 
