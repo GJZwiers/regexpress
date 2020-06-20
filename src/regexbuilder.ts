@@ -3,7 +3,7 @@ interface RegexGroup {
     values: Array<string>;
 }
 
-export class RegexBuilder {
+class RegexBuilder {
     private groups: Array<RegexGroup> = [];
     private template = "";
     private flags = "";

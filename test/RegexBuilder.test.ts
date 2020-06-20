@@ -1,9 +1,6 @@
-import { TemplateBuilder, AutoSorter, Regexpress } from '../src/index';
+import { TemplateBuilder, AutoSorter, Reno } from '../src/index';
 
-import * as mocha from  'mocha';
-import * as chai from 'chai';
-
-const expect = chai.expect;
+import {expect } from 'chai';
 
 const mockRegexData = {
     values: [
@@ -124,12 +121,12 @@ const autoSortSettingFalseMock = {
 describe('autosorter tests', () => {
     
     it('should sort from data with autosort setting = true', () => {
-        expect(new Regexpress().buildRegex(regexDataAutoSortMock, autoSortSettingFalseMock))
+        expect(new Reno().buildRegex(regexDataAutoSortMock, autoSortSettingFalseMock))
             .to.deep.equal(/(a{1}|a{3}fb*c{1,10}|d*abc+f{2}|c{1,100}|d{5, 17}|e{5}|abc+|a+)/);
     });
 
     it('should not sort from data with autosort setting = false', () => {
-        expect(new Regexpress().buildRegex(regexDataAutoSortMock, autoSortSettingTrueMock))
+        expect(new Reno().buildRegex(regexDataAutoSortMock, autoSortSettingTrueMock))
             .to.deep.equal(/(a{3}fb*c{1,10}|d*abc+f{2}|abc+|a+|c{1,100}|d{5, 17}|e{5}|a{1})/);
     });
 

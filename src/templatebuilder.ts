@@ -1,11 +1,11 @@
 import { AugmentedExp } from './augmentedExp';
 import { RegexBuilderBase } from './builderbase';
-import { RXListSettings, RXSettings, RXData, RXPlaceholder } from './IRegex';
+import { RegexListSettings, RegexSettings, RegexData, RegexPlaceholder } from './IRegex';
 
 export class TemplateBuilder extends RegexBuilderBase {
-    protected _settings: RXSettings;
+    protected _settings: RegexSettings;
 
-    constructor(regexData: RXData, settings: RXSettings, placeholders?: RXPlaceholder) {
+    constructor(regexData: RegexData, settings: RegexSettings, placeholders?: RegexPlaceholder) {
         super(regexData, settings, placeholders);
         this._settings = settings;  
     }
@@ -21,9 +21,9 @@ export class TemplateBuilder extends RegexBuilderBase {
 }
 
 export class TemplateListBuilder extends RegexBuilderBase {
-    protected _settings: RXListSettings;
+    protected _settings: RegexListSettings;
 
-    constructor(regexData: RXData, settings: RXListSettings, placeholders?: RXPlaceholder) {
+    constructor(regexData: RegexData, settings: RegexListSettings, placeholders?: RegexPlaceholder) {
         super(regexData, settings, placeholders);
         this._settings = settings;
     }

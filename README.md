@@ -4,9 +4,9 @@ specified in a settings object and accompanied by a data object.
 Usage:
 
 ```javascript
-import { Regexpress } from 'regexpress';
+import { Reno } from 'reno';
 
-const rxp = new Regexpress();
+const reno = new Regexpress();
 ```
 
 ```javascript
@@ -133,51 +133,6 @@ The example below reuses components for day, month and year in both an expiry da
         ],
         flags: ''
     }
-
-```
-
-(Experimental)
-Use the autoSort method on any groups of alternates to order them by theoretical maximum matching length. This is calculated by summing a patterns' quantifiers and non-special characters.
-
-From code:
- ```javascript
-
-const regexData = {
-    samples: [
-        'a{1}',
-        'b{1}',
-        'a{3}fb*c{1,10}',
-        'a{3}ffb{7}c{1,10}',
-        'd*abc+f{2}',
-        'c{1,100}',
-        'd{5, 17}',
-        'e{5}',
-        'abc+',
-        'a+'
-    ]
- };
-    
-const sorted = rxp.autoSort(regexData);
-
-```
-Or from data:
- ```javascript
-
- const settingsAutoSort = {
-    template: 'samples',
-    autosort: true,
-    separator: '|',
-    flags: ''
-};
-    
-const sorted = rxp.buildRegex(regexData, settingsAutoSort);
-
-```
-
-
-To try a file with regexpress code from your command line, ESM is required to handle ES6 module syntax:
-```console
-node -r esm filename.js
 
 ```
 
