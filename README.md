@@ -6,7 +6,7 @@ Usage:
 ```javascript
 import { Reno } from 'reno';
 
-const reno = new Regexpress();
+const reno = new Reno();
 ```
 
 ```javascript
