@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/GJZwiers/Reno.git"
+    "url": "git+https://github.com/GJZwiers/regex-notation-object.git"
   },
   "keywords": [
     "regex",
@@ -21,13 +21,11 @@
   "author": "Geert-Jan Zwiers",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/GJZwiers/Reno/issues"
+    "url": "https://github.com/GJZwiers/regex-notation-object/issues"
   },
-  "homepage": "https://github.com/GJZwiers/Reno#readme",
+  "homepage": "https://github.com/GJZwiers/regex-notation-object#readme",
   "type": "module",
-  "dependencies": {
-    "esm": "^3.2.25"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/chai": "^4.2.11",
     "@types/mocha": "^5.2.7",

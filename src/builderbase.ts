@@ -15,7 +15,8 @@ export abstract class RegexBuilderBase {
         for (const namedGroup in this._regexData) {
             const builtGroup = this._buildGroup(this._regexData[namedGroup]);
             const subbedGroup = this._substitutePlaceholder(builtGroup);
-            template = template.replace(new RegExp(`${namedGroup}(?=\\W)`, 'g'), subbedGroup);
+
+            template = template.replace(new RegExp(`${namedGroup}(?=\\W|$)`, 'g'), subbedGroup);
         }
         
         return template;

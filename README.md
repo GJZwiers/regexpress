@@ -1,18 +1,27 @@
-Note: This package is undergoing some naming changes. The codebase and readme will be be updated soon.
+RegExpress builds regex patterns from JavaScript objects using templates.
 
-Reno creates regular expressions from JavaScript objects using template strings.
+### Installation
+The package should run without dependencies in Node v13+. In older version you may need `esm` or something similar to handle ES6 modules.npm
 
-Usage:
 
+### Import
+After installing import the module to any `.js` file.
 ```javascript
 import { Regexpress } from 'regexpress';
+```
 
+Create an instance of the Regexpress class after which you can use its functions:
+### Initialization
+```javascript
 const rxp = new Regexpress();
 ```
 
+### Usage
+Declare an object with the pattern's values and second one with a template that describes the pattern structure. arrays of values will be concatenated with `|` by default.
+
 ```javascript
 const regexData = {
-    volume: '\\d{1,4}',
+    volume: String.Raw`\d{1,4}`,
     unit: ['ml', 'cl', 'l']
 };
 
@@ -23,40 +32,33 @@ const settings = {
 
 const regex = rxp.buildRegex(regexData, settings);
 ```
-The above builds the pattern: ```/(\d{1,4}) (ml|cl|l)/i``` in the following steps:
- * Arrays of strings are joined with pipe symbols by default
-to create alternates:
-```javascript
-['ml', 'cl', 'l'] -> 'ml|cl|l'
-```
-* The values are inserted into the regex group in the template string:
+
+The above objects build the pattern `/(\d{1,4}) (ml|cl|l)/i` by replacing the names in the template with the corresponding key in the values object, one by one. Next, the regex string is compiled and given the specified flag(s).
+
 ```javascript
 '(volume) (unit)' -> '(\\d{1,4}) (unit)'
 '(\\d{1,4}) (unit)' -> '(\\d{1,4}) (ml|cl|l)'
 ```
-* The string is then compiled to regex 
-with the specified flag(s):
 ```javascript
 '(\\d{1,4}) (ml|cl|l)' -> /(\d{1,4}) (ml|cl|l)/i
 ```
 
-A custom separator can be defined by adding a separator field to the settings:
+Defining a custom separator is possbiel by including a `separator` key in the settings object:
 
 ```javascript
-const regexData = {
-    keywords: ['one', 'two', 'three']
-};
-
 const settings = {
     template: 'keywords',
-    flags: '',
     separator: '.+'
+};
+
+const regexData = {
+    keywords: ['one', 'two', 'three']
 };
 
 const regex = rxp.buildRegex(regexData, settings); -> /one.+two.+three/
 ```
 
-Reno can be helpful in scenarios where you want to match data coming in a high variety of different notations but with similar meaning. Suppose you want to match volume data which can come as either a single value, a min-max range or a limit value (e.g. > 100). With Reno you can declare a list of templates for each of these:
+RegExpress can be helpful when you want to match data that has a high variety of different notations with similar meaning. Suppose you want to match volume data which can come as either a single value, a min-max range or a limit value (e.g. > 100). With RegExpress you can declare a list of templates for each of these:
 
  ```javascript
     const settings = {
@@ -84,24 +86,24 @@ Reno can be helpful in scenarios where you want to match data coming in a high v
     */
 ```
 
-Patterns built using Regexpress contain the template string as a property, which can be used to map the matches array to an object with the named groups being the keys:
+Any pattern built using RegExpress contains the template as a property and can be used to map an array of matches to an object, with the template names as keys:
 
 ```javascript
 const volumeData = '100 ml';
 // regex: /(\d{1,4}) (ml|cl|l)/i, template: '(volume) (unit)'
+
 const matches = volumeData.match(regex);
 // matches: [ '100 ml', '100', 'ml']
+
 const map = rxp.mapTemplate(matches, regex.getTemplate()); 
 // map: { fullMatch: '100 ml', volume: '100', unit: 'ml' }
 ```
 
-You can reuse regex groups in a number of patterns by declaring them in a separate object and adding placeholders in the regex data. They can also be used when you want to have similar groups but want to name them differently:
+Reusing regex groups in a number of patterns can be done by declaring them in a separate object and adding placeholder where you want to insert them in the regex values.
 
 The example below reuses components for day, month and year in both an expiry date as well as a calendar date:
 
  ```javascript
-    import { Regexpress } from 'regexpress';
-
     const substitutes = {
         day: '[0-3][0-9]',
         month:  ['jan','feb','mar','apr','may','jun',
@@ -136,4 +138,3 @@ The example below reuses components for day, month and year in both an expiry da
     }
 
 ```
-
