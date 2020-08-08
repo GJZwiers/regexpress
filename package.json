@@ -1,6 +1,6 @@
 {
   "name": "regexpress",
-  "version": "3.1.3",
+  "version": "3.1.4",
   "description": "Regular Expression Notation Objects",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/GJZwiers/Reno.git"
+    "url": "git+https://github.com/GJZwiers/regex-notation-object.git"
   },
   "keywords": [
     "regex",
@@ -21,18 +21,17 @@
   "author": "Geert-Jan Zwiers",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/GJZwiers/Reno/issues"
+    "url": "https://github.com/GJZwiers/regex-notation-object/issues"
   },
-  "homepage": "https://github.com/GJZwiers/Reno#readme",
+  "homepage": "https://github.com/GJZwiers/regex-notation-object#readme",
   "type": "module",
-  "dependencies": {
-    "esm": "^3.2.25"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/chai": "^4.2.11",
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.12.30",
     "chai": "^4.2.0",
+    "esm": "^3.2.25",
     "filehound": "^1.17.4",
     "mocha": "^8.0.1",
     "rewire": "^4.0.1",
