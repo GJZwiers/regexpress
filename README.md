@@ -1,8 +1,7 @@
 RegExpress builds regex patterns from JavaScript objects using templates.
 
 ### Installation
-The package should run without dependencies in Node v13+. In older version you may need `esm` or something similar to handle ES6 modules.npm
-
+The package should run without dependencies in Node v13+. In older versions you may need `esm` or something similar to handle ES6 modules.
 
 ### Import
 After installing import the module to any `.js` file.
@@ -43,7 +42,7 @@ The above objects build the pattern `/(\d{1,4}) (ml|cl|l)/i` by replacing the na
 '(\\d{1,4}) (ml|cl|l)' -> /(\d{1,4}) (ml|cl|l)/i
 ```
 
-Defining a custom separator is possbiel by including a `separator` key in the settings object:
+Defining a custom separator is possible by including a `separator` key in the settings object:
 
 ```javascript
 const settings = {
@@ -86,7 +85,7 @@ RegExpress can be helpful when you want to match data that has a high variety of
     */
 ```
 
-Any pattern built using RegExpress contains the template as a property and can be used to map an array of matches to an object, with the template names as keys:
+Any pattern built with RegExpress contains the template as a property and can be used to map an array of matches to an object, with the template names as keys:
 
 ```javascript
 const volumeData = '100 ml';
@@ -99,7 +98,7 @@ const map = rxp.mapTemplate(matches, regex.getTemplate());
 // map: { fullMatch: '100 ml', volume: '100', unit: 'ml' }
 ```
 
-Reusing regex groups in a number of patterns can be done by declaring them in a separate object and adding placeholder where you want to insert them in the regex values.
+Reusing regex groups in a number of patterns can be done by declaring them in a separate object and adding placeholders where you want to insert them in the regex values.
 
 The example below reuses components for day, month and year in both an expiry date as well as a calendar date:
 
