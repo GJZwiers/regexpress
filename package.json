@@ -27,16 +27,16 @@
   "type": "module",
   "dependencies": {},
   "devDependencies": {
-    "@types/chai": "^4.2.11",
+    "@types/chai": "^4.2.12",
     "@types/mocha": "^5.2.7",
-    "@types/node": "^12.12.30",
+    "@types/node": "^12.12.54",
     "chai": "^4.2.0",
     "esm": "^3.2.25",
     "filehound": "^1.17.4",
-    "mocha": "^8.0.1",
+    "mocha": "^8.1.1",
     "rewire": "^4.0.1",
-    "ts-node": "^8.6.2",
-    "typescript": "^3.8.3"
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7"
   },
   "files": [
     "/dist",
