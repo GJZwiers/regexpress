@@ -1,4 +1,4 @@
-[!CircleCI](https://circleci.com/gh/GJZwiers/regex-notation-object.svg?style=shield)](https://app.circleci.com/pipelines/github/GJZwiers)
+[![CircleCI](https://circleci.com/gh/GJZwiers/regex-notation-object.svg?style=shield)](https://app.circleci.com/pipelines/github/GJZwiers)
 
 RegExpress builds regex patterns from JavaScript objects using templates.
 
@@ -18,7 +18,7 @@ const rxp = new Regexpress();
 ```
 
 ### Usage
-Declare an object with the pattern's values and second one with a template that describes the pattern structure. arrays of values will be concatenated with `|` by default.
+Declare an object with the pattern's values and second one with a template that describes the pattern structure. Arrays of values will be concatenated with `|` by default.
 
 ```javascript
 const regexData = {
