@@ -1,4 +1,4 @@
-[![gjzwiers](https://circleci.com/gh/gjzwiers/regex-notation-object.svg?style=svg)](https://app.circleci.com/pipelines/github/GJZwiers)
+![CircleCI](https://img.shields.io/circleci/build/github/GJZwiers/regex-notation-object/main)
 
 RegExpress builds regex patterns from JavaScript objects using templates.
 
