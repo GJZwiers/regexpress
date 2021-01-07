@@ -1,45 +1,103 @@
+import { RegexData, RegexPlaceholders, RegexSettings, RegexSettingsBase, ExtraSetting } from './interfaces';
 import { AugmentedExp } from './augmentedExp';
-import { RegexBuilderBase } from './builderbase';
-import { RegexListSettings, RegexSettings, RegexData, RegexPlaceholder } from './IRegex';
 
-export class TemplateBuilder extends RegexBuilderBase {
-    protected _settings: RegexSettings;
-
-    constructor(regexData: RegexData, settings: RegexSettings, placeholders?: RegexPlaceholder) {
-        super(regexData, settings, placeholders);
-        this._settings = settings;  
-    }
-
-    public build() : AugmentedExp {
-        return this._buildRegex(this._buildTemplate(this._settings.template));
-    }
-
-    private _buildRegex(regexString: string) : AugmentedExp {
-        return new AugmentedExp(regexString, this._settings.flags, this._settings.template);
-    }
-
+interface TemplateSpecification {
+    buildTemplate(template: string) : string;
 }
 
-export class TemplateListBuilder extends RegexBuilderBase {
-    protected _settings: RegexListSettings;
+abstract class SpecificationBase<T extends RegexSettingsBase> {
+    constructor(protected data: RegexData, protected settings: T) {}
+}
 
-    constructor(regexData: RegexData, settings: RegexListSettings, placeholders?: RegexPlaceholder) {
-        super(regexData, settings, placeholders);
-        this._settings = settings;
+class TemplateBuilder {
+    private spec: TemplateSpecification;
+
+    constructor(spec: TemplateSpecification) {
+        this.spec = spec;
     }
 
-    public build() : Array<AugmentedExp> {
-        const regexList: Array<AugmentedExp> = [];
-        for (let template of this._settings.templateList) {
-            const regexString = this._buildTemplate(template);
-            regexList.push(this._buildRegex(regexString, template));
+    build(templates: string[], flags: string) : Array<AugmentedExp> {
+        const regexes: Array<AugmentedExp> = [];
+        for (let template of templates) {
+            const regexString = this.spec.buildTemplate(template);
+            const regex = this.buildRegex(regexString, flags, template)
+            regexes.push(regex);
         }
-        
-        return regexList;
+        return regexes;
     }
 
-    private _buildRegex(regexString: string, template: string) : AugmentedExp {
-        return new AugmentedExp(regexString, this._settings.flags, template);
+    private buildRegex(regexString: string, flags: string, template: string) : AugmentedExp {
+        return new AugmentedExp(regexString, flags, template);
     }
-
 }
+
+class DefaultSpecification extends SpecificationBase<RegexSettings> implements TemplateSpecification {
+    private readonly placeholders: RegexPlaceholders;
+
+    constructor(data: RegexData, settings: RegexSettings, placeholders?: RegexPlaceholders) {
+        super(data, settings);
+        this.placeholders = placeholders || {};
+    }
+
+    buildTemplate(template: string) : string {
+        for (const name in this.data) {
+            const group = this.subPlaceholder(this.buildGroup(this.data[name]));
+            template = template.replace(new RegExp(`${name}(?=\\W|$)`, 'g'), group);
+        }
+        return template;
+    }
+
+    protected buildGroup(group: string[] | string) : string {
+        return (Array.isArray(group)) ? group.join(this.settings.separator || '|') : group;
+    }
+
+    protected subPlaceholder(group: string) : string {
+        return group.replace(/~~(\w+)~~/, (match: string, p1: string) => {
+            if (!this.placeholders[p1]) {
+                throw new Error(`undefined placeholder ${match} in regex data`);
+            }
+            return this.buildGroup(this.placeholders[p1]);
+        });
+    }
+}
+
+class NoPlaceHolderSpecification extends SpecificationBase<RegexSettings> implements TemplateSpecification {
+    constructor(data: RegexData, settings: RegexSettings) {
+        super(data, settings); 
+    }
+
+    buildTemplate(template: string) : string {
+        for (const name in this.data) {
+            const group = this.buildGroup(this.data[name]);
+            template = template.replace(new RegExp(`${name}(?=\\W|$)`, 'g'), group);
+        }
+        return template;
+    }
+
+    protected buildGroup(group: string[] | string) : string {
+        return (Array.isArray(group)) ? group.join(this.settings.separator || '|') : group;
+    }
+}
+
+class ExtraSettingSpecification extends SpecificationBase<ExtraSetting> implements TemplateSpecification {
+    constructor(data: RegexData, settings: ExtraSetting, placeholders?: RegexPlaceholders) {
+        super(data, settings); 
+    }
+
+    buildTemplate(template: string) : string {
+        if (this.settings.degrade === true) {
+            
+        }
+        for (const name in this.data) {
+            const group = this.buildGroup(this.data[name]);
+            template = template.replace(new RegExp(`${name}(?=\\W|$)`, 'g'), group);
+        }
+        return template;
+    }
+
+    protected buildGroup(group: string[] | string) : string {
+        return (Array.isArray(group)) ? group.join(this.settings.separator || '|') : group;
+    }
+}
+
+export { TemplateBuilder, DefaultSpecification, TemplateSpecification, NoPlaceHolderSpecification, ExtraSettingSpecification }

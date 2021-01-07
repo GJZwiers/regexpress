@@ -2,9 +2,11 @@ interface RegexMap {
     [key: string]: string
 }
 
+//todo: add setting map: true/false
+
 export class TemplateMapper {
     static map(results: RegExpMatchArray | null, template: string) : object {
-        if (results === null) throw new Error('cannot map null matches');
+        if (results === null) throw new Error('No match results found to map');
         if (/\((\w+)\).+\1\W/.test(template)) throw new Error('identical name in template string');
         
         let map: RegexMap = { fullMatch: results[0] };

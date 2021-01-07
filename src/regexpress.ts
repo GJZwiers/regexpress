@@ -1,35 +1,57 @@
-import * as Regexp from './index';
+import { AugmentedExp } from './augmentedExp';
+import { DefaultSpecification } from './templatebuilder';
+import { AutoSorter, RegexData, RegexSettings, RegexPlaceholders,
+         TemplateBuilder, TemplateMapper } from './index';
 
-export class Regexpress {
-
+export default class Regexpress {
     constructor() {}
 
-    autoSort(RegexData: Regexp.RegexData) {
-        return new Regexp.AutoSorter(RegexData).autoSort();
+    autoSort(data: RegexData) {
+        return new AutoSorter(data).autoSort();
     }
 
-    buildRegex(RegexData: Regexp.RegexData, RegexSettings: Regexp.RegexSettings, RegexPlaceholder?: Regexp.RegexPlaceholder) {
-        if (this._isAutoSortable(RegexSettings)) {
-            RegexData = this.autoSort(RegexData);
+    /** 
+     * Constructs a new pattern from a regex notation object.
+        @param {RegexData} data - An object with keys named similarly to regex template groups.
+        @param {RegexSettings} settings - An object with settings tuning the pattern's behavior.
+        @param {RegexPlaceholders} placeholders - An object with substitutes for any placeholder syntax (~~MYPLACEHOLDER~~) in the regex template's values.
+    */
+    build(data: RegexData, settings: RegexSettings, placeholders?: RegexPlaceholders): Array<AugmentedExp> {
+        if (this.isAutoSortable(settings)) {
+            data = this.autoSort(data);
         }
-        
-        return new Regexp.TemplateBuilder(RegexData, RegexSettings, RegexPlaceholder).build();
-    }
-
-    buildRegexes(RegexData: Regexp.RegexData, RegexListSettings: Regexp.RegexListSettings, RegexPlaceholder?: Regexp.RegexPlaceholder) {
-        if (this._isAutoSortable(RegexListSettings)) {
-            RegexData = this.autoSort(RegexData);
+        if (typeof settings.template === 'string') {
+            settings.template = [settings.template];
         }
-
-        return new Regexp.TemplateListBuilder(RegexData, RegexListSettings, RegexPlaceholder).build();
+        return new TemplateBuilder(
+            new DefaultSpecification(data, settings, placeholders))
+            .build(<string[]>settings.template, settings.flags);
     }
 
-    private _isAutoSortable(RegexSettings: Regexp.RegexSettings | Regexp.RegexListSettings) {
+    private isAutoSortable(RegexSettings: RegexSettings): boolean | undefined {
         return (RegexSettings.autosort && RegexSettings.separator === ('|' || undefined));
     }
 
-    mapTemplate(results: RegExpMatchArray | null, template: string) {
-        return Regexp.TemplateMapper.map(results, template);
+    /**
+     * DEPRECATED, please use [instance].build() with the appropriate arguments.
+     */
+    buildRegex(data: RegexData, settings: RegexSettings, placeholders?: RegexPlaceholders): AugmentedExp {
+        return this.build(data, settings, placeholders)[0];
     }
-    
+
+    /**
+     * DEPRECATED, please use [instance].build() with the appropriate arguments.
+     */
+    buildRegexes(data: RegexData, settings: RegexSettings, placeholders?: RegexPlaceholders): Array<AugmentedExp> {
+        return this.build(data, settings, placeholders);
+    }
+
+    /** 
+     * Map an array of matches to an object of keys with identical names as those in the regex template.
+        @param {RegExpMatchArray | null} results - The results of a regex match.
+        @param {string} template - The template to be used to map the results. 
+    */
+    mapTemplate(results: RegExpMatchArray | null, template: string): object {
+        return TemplateMapper.map(results, template);
+    }
 }

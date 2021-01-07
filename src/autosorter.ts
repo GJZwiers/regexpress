@@ -1,4 +1,4 @@
-import { RegexData } from "./IRegex";
+import { RegexData } from "./interfaces";
 import { TemplateMapper } from "./templatemapper";
 
 interface RegexDto {
@@ -7,36 +7,36 @@ interface RegexDto {
 }
 
 export class AutoSorter {
-    private readonly _regexData: RegexData;
+    private readonly regexData: RegexData;
 
     constructor(regexData: RegexData) {
-        this._regexData = regexData;
+        this.regexData = regexData;
     }
 
     public autoSort() {
         let sortedData: RegexData = {};
-        for (const namedGroup in this._regexData) {
-            if (!this._isAutoSortable(this._regexData[namedGroup])) 
+        for (const namedGroup in this.regexData) {
+            if (!this.isAutoSortable(this.regexData[namedGroup])) 
                 continue;
 
-            sortedData[namedGroup] = this._sortGroup(<string[]> this._regexData[namedGroup]);
+            sortedData[namedGroup] = this.sortGroup(<string[]> this.regexData[namedGroup]);
         }
         
         return sortedData;
     }
 
-    protected _isAutoSortable(group: string[] | string) {
-        return (Array.isArray(group));
+    protected isAutoSortable(group: string[] | string) {
+        return Array.isArray(group);
     }
 
-    protected _sortGroup(group: string[]) : string[] {
+    protected sortGroup(group: string[]) : string[] {
         const regexes: RegexDto = {
             quant: /.\{(\d+),?\s?(\d+)?\}/g,
             nonQuant: /(?!<=\{)\w+(?!\{|.+\}[}{*+])|(?=\\)[?+*$^{}()\[\]\\]/g
         };
 
         const sortLogic = (a: string, b: string) => {
-            return this._getLargestMatchLength(b, regexes) - this._getLargestMatchLength(a, regexes);
+            return this.getLargestMatchLength(b, regexes) - this.getLargestMatchLength(a, regexes);
         };
 
         const patternsWithMetas: string[] = group.filter(element => {
@@ -54,7 +54,7 @@ export class AutoSorter {
         return patternsWithMetas.concat(patternsWithLiterals);
     }
 
-    protected _getLargestMatchLength(regexString: string, patterns: RegexDto) : number {
+    protected getLargestMatchLength(regexString: string, patterns: RegexDto) : number {
         let total = 0;
 
         const matches = regexString.replace(patterns.quant, (match, min, max) => {
@@ -68,18 +68,18 @@ export class AutoSorter {
             return total;
 
         for (const match of includeInCount) {
-            total += this._addNonQuant(match);
+            total += this.addNonQuant(match);
         }
 
         return total;
     }
 
-    protected _addQuant(match: RegExpMatchArray) : number {
+    protected addQuant(match: RegExpMatchArray) : number {
         const map: any = TemplateMapper.map(match, '(minrange)(maxrange)');
         return (map.maxrange !== undefined) ? parseInt(map.maxrange) : parseInt(map.minrange);
     }
 
-    protected _addNonQuant(match: RegExpMatchArray) : number {
+    protected addNonQuant(match: RegExpMatchArray) : number {
         const map: any = TemplateMapper.map(match, '');
         return map.fullMatch.length;
     }
