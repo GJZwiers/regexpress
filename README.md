@@ -1,67 +1,54 @@
-RegExpress builds regex patterns from JavaScript objects using templates.
+# RegExpress
+This package builds regex patterns from JavaScript objects using templates. 
 
-### Installation
-The package should run without dependencies in Node v13+. In older versions you may need `esm` or something similar to handle ES6 modules.
+## Installation
+Make sure `npm` is installed, then change into your project directory and run `npm install regexpress`.
 
-### Import
-After installing import the module to any `.js` file.
+The package runs without dependencies in Node v13.2.0+. In older versions you may need to run with the `--experimental-modules` flag or another package to handle ES6 modules.
+
+## Import
+After installing import the module:
 ```javascript
 import { Regexpress } from 'regexpress';
 ```
 
+## Initialization
 Create an instance of the Regexpress class after which you can use its functions:
-### Initialization
 ```javascript
 const rxp = new Regexpress();
 ```
 
-### Usage
-Declare an object with the pattern's values and second one with a template that describes the pattern structure. arrays of values will be concatenated with `|` by default.
-
+## Basic Usage
+Declare an object with `template` and `flags` properties, then create an object for the actual pattern values stored under the same names as in the template:
 ```javascript
-const regexData = {
-    volume: String.Raw`\d{1,4}`,
-    unit: ['ml', 'cl', 'l']
-};
-
 const settings = {
     template: '(volume) (unit)',
     flags: 'i'
 };
 
-const regex = rxp.buildRegex(regexData, settings);
+const regexData = {
+    volume: String.Raw`\d{1,4}`,
+    unit: ['ml', 'cl', 'L']
+};
+
+const regex = rxp.build(regexData, settings);
 ```
 
-The above objects build the pattern `/(\d{1,4}) (ml|cl|l)/i` by replacing the names in the template with the corresponding key in the values object, one by one. Next, the regex string is compiled and given the specified flag(s).
 
+The above objects build the pattern `/(\d{1,4}) (ml|cl|l)/i` in the following steps:  
+1. Replace the template names with the right values:
 ```javascript
 '(volume) (unit)' -> '(\\d{1,4}) (unit)'
 '(\\d{1,4}) (unit)' -> '(\\d{1,4}) (ml|cl|l)'
 ```
-```javascript
-'(\\d{1,4}) (ml|cl|l)' -> /(\d{1,4}) (ml|cl|l)/i
-```
+2. Compile the string to regex: `'(\\d{1,4}) (ml|cl|l)' -> /(\d{1,4})(ml|cl|l)/i`
 
-Defining a custom separator is possible by including a `separator` key in the settings object:
 
-```javascript
-const settings = {
-    template: 'keywords',
-    separator: '.+'
-};
-
-const regexData = {
-    keywords: ['one', 'two', 'three']
-};
-
-const regex = rxp.buildRegex(regexData, settings); -> /one.+two.+three/
-```
-
-RegExpress can be helpful when you want to match data that has a high variety of different notations with similar meaning. Suppose you want to match volume data which can come as either a single value, a min-max range or a limit value (e.g. > 100). With RegExpress you can declare a list of templates for each of these:
+You can also declare a list of templates. This can be helpful to match data that comes in a high variety of different notations with similar meaning. Suppose you want to match volume data which can come as either a single value (100), a min-max range (10-100) or a limit value (<100). With RegExpress you can declare a template for each of these:
 
  ```javascript
     const settings = {
-            templateList: [
+            template: [
             '(volume) (unit)[- ]+(volume) (unit)',  // Range
             '[>< ]+(volume) (unit)',                // Limit
             '(volume) (unit)',                      // Single
@@ -74,8 +61,7 @@ RegExpress can be helpful when you want to match data that has a high variety of
         unit: ['ml', 'cl', 'l'],
     };
 
-    const regexes = rxp.buildRegexes(regexData, settings);
-
+    const regexes = rxp.build(regexData, settings);
     /* 
     Will build array of patterns: [
         /(\d{1,4})(ml|cl|l)[- ]+(\d{1,4})(ml|cl|l)/i,
@@ -85,11 +71,12 @@ RegExpress can be helpful when you want to match data that has a high variety of
     */
 ```
 
-Any pattern built with RegExpress contains the template as a property and can be used to map an array of matches to an object, with the template names as keys:
+## Mapping Matches
+Patterns built with RegExpress contains their template as a property and can be used to map any match results to an object, containing the template names as keys:
 
 ```javascript
-const volumeData = '100 ml';
 // regex: /(\d{1,4}) (ml|cl|l)/i, template: '(volume) (unit)'
+const volumeData = '100 ml';
 
 const matches = volumeData.match(regex);
 // matches: [ '100 ml', '100', 'ml']
@@ -98,12 +85,13 @@ const map = rxp.mapTemplate(matches, regex.getTemplate());
 // map: { fullMatch: '100 ml', volume: '100', unit: 'ml' }
 ```
 
-Reusing regex groups in a number of patterns can be done by declaring them in a separate object and adding placeholders where you want to insert them in the regex values.
+## Placeholders
+To reuse template values in a number of patterns you can store them in a special object and add placeholders at the places you want them to be inserted in any pattern.
 
-The example below reuses components for day, month and year in both an expiry date as well as a calendar date:
+The example below reuses components for `day`, `month` and `year` in both an expiry date as well as a calendar date:
 
  ```javascript
-    const substitutes = {
+    const subs = {
         day: '[0-3][0-9]',
         month:  ['jan','feb','mar','apr','may','jun',
                 'jul','aug','sep','okt','nov','dec'],
@@ -129,11 +117,34 @@ The example below reuses components for day, month and year in both an expiry da
     }
     
     const calendarDateSettings = {
-        templateList: [
+        template: [
         '(day)-(month)-(year)',
         '(month)-(day)-(year)'
         ],
         flags: ''
     }
+```
 
+## Settings
+Defining a custom separator is possible by adding a `separator` key to the settings:
+
+```javascript
+const settings = {
+    template: 'keywords',
+    separator: '.+'
+};
+
+const regexData = {
+    keywords: ['one', 'two', 'three']
+};
+
+const regex = rxp.build(regexData, settings); -> /one.+two.+three/
+```
+
+It is possible to sort the arrays with the regex values, analyzing the maximum length of the string they might match and sorting the alternates in ascending order. This is experimental and only works when using the `|` as separator:
+```javascript
+const settings = {
+    template: 'keywords',
+    autosort: true
+}
 ```

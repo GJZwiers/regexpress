@@ -1,6 +1,8 @@
-import { TemplateBuilder, AutoSorter, Regexpress } from '../src/index';
-
-import {expect } from 'chai';
+import { expect } from 'chai';
+import { assert } from 'chai';
+import Regexpress from '../src/regexpress';
+import { TemplateBuilder, AutoSorter } from '../src/index';
+import { DefaultSpecification } from '../src/templatebuilder';
 
 const mockRegexData = {
     values: [
@@ -10,7 +12,7 @@ const mockRegexData = {
 };
 
 const mockSettings = {
-    template: '(values)',
+    template: ['(values)'],
     flags: ''
 };
 
@@ -30,7 +32,7 @@ const mockRegexDataMulti = {
 };
 
 const settingsMulti = {
-    template: '(one)(two)(three)',
+    template: ['(one)(two)(three)'],
     flags: ''
 };
 
@@ -62,45 +64,47 @@ const mockRegexDataWithUndefinedPlaceholder = {
     ]
 };
 
-describe('regex builder logic tests', () => {
-
-    it('should be possible to instantiate without passing any placeholders', () => {
-        expect(new TemplateBuilder(mockRegexDataWithNoPlaceholder, mockSettings).build())
-            .to.deep.equal(/(1|2)/);
+describe('TemplateBuilder', () => {
+    it('Should not throw when given no placeholders', () => {
+        expect(() => { new TemplateBuilder(
+            new DefaultSpecification(mockRegexDataWithNoPlaceholder, mockSettings))
+            .build(mockSettings.template, mockSettings.flags)})
+            .to.not.throw();
     });
+    it('Should create regex /(1|2)/ from template "(values)" and object { values: ["1", "2"] }', () => {
+        const patterns = new TemplateBuilder(new DefaultSpecification(mockRegexData, mockSettings))
+            .build(mockSettings.template, mockSettings.flags);
 
-    it('should create regex /(1|2)/ from template "(values)" and object { values: ["1", "2"] }', () => {
-        expect(new TemplateBuilder(mockRegexData, mockSettings).build())
-            .to.deep.equal(/(1|2)/);
+        expect(patterns.length).to.be.above(0);
+        const elt = patterns[0];
+        assert.equal(elt instanceof RegExp, true);
+        expect(elt).to.haveOwnProperty('_template');
     });
-
-    it('should arrange template groups properly: template (one)(two)(three) => /(1|2)(2|3)(3|4)/', () => {
-        expect(new TemplateBuilder(mockRegexDataMulti, settingsMulti).build())
-            .to.deep.equal(/(1|2)(2|3)(3|4)/);
+    it('Should arrange template groups properly: template (one)(two)(three) => /(1|2)(2|3)(3|4)/', () => {
+        const patterns = new TemplateBuilder(new DefaultSpecification(mockRegexDataMulti, settingsMulti))
+            .build(settingsMulti.template, settingsMulti.flags)
+        
+        expect(patterns.length).to.be.above(0);
+        expect(patterns[0]).to.deep.equal(/(1|2)(2|3)(3|4)/);
     });
-    
     it('should substitute a placeholder with syntax ~~name~~ wih the correct values', () => {
-        expect(new TemplateBuilder(mockRegexDataWithPlaceholder, mockSettings, mockPlaceholder).build())
-            .to.deep.equal(/(p1|p2|p3|1|2)/)
-    });
+        const patterns = new TemplateBuilder(new DefaultSpecification(mockRegexDataWithPlaceholder, mockSettings, mockPlaceholder))
+            .build(mockSettings.template, mockSettings.flags);
 
-    it('should throw an error when an undefined placeholder is encountered', () => {
-        expect(() => new TemplateBuilder(mockRegexDataWithUndefinedPlaceholder, mockSettings, mockPlaceholder).build())
+        expect(patterns.length).to.be.above(0);
+        expect(patterns[0]).to.deep.equal(/(p1|p2|p3|1|2)/);
+    });
+    it('Should throw an error when an undefined placeholder is encountered', () => {
+        expect(() => new TemplateBuilder(new DefaultSpecification(mockRegexDataWithUndefinedPlaceholder, mockSettings, mockPlaceholder))
+            .build(mockSettings.template, mockSettings.flags))
             .to.throw('undefined placeholder ~~holdplacer~~ in regex data');
     });
-  
 });
 
 const regexDataAutoSortMock = {
     Quantifiers: [
         'a{1}',
-        'a{3}fb*c{1,10}',
-        'd*abc+f{2}',
-        'c{1,100}',
-        'd{5, 17}',
-        'e{5}',
-        'abc+',
-        'a+'
+        'a{3}fb*c{1,10}'
     ]
 };
 
@@ -120,26 +124,20 @@ const autoSortSettingFalseMock = {
 
 describe('autosorter tests', () => {
     
-    it('should sort from data with autosort setting = true', () => {
+    it('Should not sort from data with autosort setting = false', () => {
         expect(new Regexpress().buildRegex(regexDataAutoSortMock, autoSortSettingFalseMock))
-            .to.deep.equal(/(a{1}|a{3}fb*c{1,10}|d*abc+f{2}|c{1,100}|d{5, 17}|e{5}|abc+|a+)/);
+            .to.deep.equal(/(a{1}|a{3}fb*c{1,10})/);
     });
 
-    it('should not sort from data with autosort setting = false', () => {
+    it('Should sort from data with autosort setting = true', () => {
         expect(new Regexpress().buildRegex(regexDataAutoSortMock, autoSortSettingTrueMock))
-            .to.deep.equal(/(a{3}fb*c{1,10}|d*abc+f{2}|abc+|a+|c{1,100}|d{5, 17}|e{5}|a{1})/);
+            .to.deep.equal(/(a{3}fb*c{1,10}|a{1})/);
     });
 
-    it('should sort from code after direct call to autoSort method', () => {
+    it('Should sort from code after direct call to autoSort method', () => {
         expect(new AutoSorter(regexDataAutoSortMock).autoSort())
             .to.deep.equal({ Quantifiers: [
             'a{3}fb*c{1,10}',
-            'd*abc+f{2}',
-            'abc+',
-            'a+',
-            'c{1,100}',
-            'd{5, 17}',
-            'e{5}',
             'a{1}'
         ]});
     });
