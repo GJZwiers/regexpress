@@ -11,7 +11,11 @@ interface RegexSettingsBase {
     template: string | string[]
 }
 
-interface RegexSettings extends RegexSettingsBase {
+interface AnySetting {
+    [key: string]: any
+}
+
+interface RegexSettings extends RegexSettingsBase, AnySetting {
     autosort?: boolean
     separator?: string
 }

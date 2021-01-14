@@ -1,15 +1,15 @@
-import { RegexData, RegexPlaceholders, RegexSettings, RegexSettingsBase, ExtraSetting } from './interfaces';
+import { RegexData, RegexPlaceholders, RegexSettings } from './interfaces';
 import { AugmentedExp } from './augmentedExp';
 
 interface TemplateSpecification {
     buildTemplate(template: string) : string;
 }
 
-abstract class SpecificationBase<T extends RegexSettingsBase> {
-    constructor(protected data: RegexData, protected settings: T) {}
+abstract class SpecificationBase {
+    constructor(protected data: RegexData, protected settings: RegexSettings) { }
 }
 
-class TemplateBuilder {
+class TemplateMaker {
     private spec: TemplateSpecification;
 
     constructor(spec: TemplateSpecification) {
@@ -20,7 +20,7 @@ class TemplateBuilder {
         const regexes: Array<AugmentedExp> = [];
         for (let template of templates) {
             const regexString = this.spec.buildTemplate(template);
-            const regex = this.buildRegex(regexString, flags, template)
+            const regex = this.buildRegex(regexString, flags, template);
             regexes.push(regex);
         }
         return regexes;
@@ -31,8 +31,8 @@ class TemplateBuilder {
     }
 }
 
-class DefaultSpecification extends SpecificationBase<RegexSettings> implements TemplateSpecification {
-    private readonly placeholders: RegexPlaceholders;
+class DefaultSpecification extends SpecificationBase implements TemplateSpecification {
+    private placeholders: RegexPlaceholders;
 
     constructor(data: RegexData, settings: RegexSettings, placeholders?: RegexPlaceholders) {
         super(data, settings);
@@ -61,7 +61,7 @@ class DefaultSpecification extends SpecificationBase<RegexSettings> implements T
     }
 }
 
-class NoPlaceHolderSpecification extends SpecificationBase<RegexSettings> implements TemplateSpecification {
+class NoPlaceHolderSpecification extends SpecificationBase implements TemplateSpecification {
     constructor(data: RegexData, settings: RegexSettings) {
         super(data, settings); 
     }
@@ -79,14 +79,14 @@ class NoPlaceHolderSpecification extends SpecificationBase<RegexSettings> implem
     }
 }
 
-class ExtraSettingSpecification extends SpecificationBase<ExtraSetting> implements TemplateSpecification {
-    constructor(data: RegexData, settings: ExtraSetting, placeholders?: RegexPlaceholders) {
+class ExtraSettingSpecification extends SpecificationBase implements TemplateSpecification {
+    constructor(data: RegexData, settings: RegexSettings, placeholders?: RegexPlaceholders) {
         super(data, settings); 
     }
 
     buildTemplate(template: string) : string {
         if (this.settings.degrade === true) {
-            
+            console.log("Applying pattern degradation.")
         }
         for (const name in this.data) {
             const group = this.buildGroup(this.data[name]);
@@ -100,4 +100,4 @@ class ExtraSettingSpecification extends SpecificationBase<ExtraSetting> implemen
     }
 }
 
-export { TemplateBuilder, DefaultSpecification, TemplateSpecification, NoPlaceHolderSpecification, ExtraSettingSpecification }
+export { SpecificationBase, TemplateMaker, DefaultSpecification, TemplateSpecification, NoPlaceHolderSpecification, ExtraSettingSpecification }

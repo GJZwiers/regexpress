@@ -15,7 +15,7 @@ import { Regexpress } from 'regexpress';
 ## Initialization
 Create an instance of the Regexpress class after which you can use its functions:
 ```javascript
-const rxp = new Regexpress();
+const rxp = new RegExpress();
 ```
 
 ## Basic Usage
