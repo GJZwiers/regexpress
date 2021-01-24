@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { Regex } from './RegexBuilder';
+import { Regex } from '../src/regexbuilder/RegexBuilder';
 
 describe('RegexBuilder', () => {
     it('should adds any group other than named group correctly with group()', () => {

@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { DefaultSpecification } from "../template-spec/TemplateSpecification";
+import { DefaultSpecification } from "../src/template-spec/TemplateSpecification";
 
 describe("DefaultSpecification", () => {
     it("should build a template from data correctly", () => {

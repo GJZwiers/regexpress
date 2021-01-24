@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { ExtendedRegExp } from "./ExtendedRegExp";
+import { ExtendedRegExp } from "../src/extended-regexp/ExtendedRegExp";
 
 describe("ExtendedRegExp", () => {
     it("should allow access to RegExp property", () => {

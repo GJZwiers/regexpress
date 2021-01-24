@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { Pattern } from './Pattern'
-import { ExtendedRegExp } from '../extended-regexp/ExtendedRegExp';
+import { Pattern } from '../src/patternbuilder/Pattern'
+import { ExtendedRegExp } from '../src/extended-regexp/ExtendedRegExp';
 
 describe('PatternBuilder', () => {
     it("should build a pattern from template and data correctly", () => {
