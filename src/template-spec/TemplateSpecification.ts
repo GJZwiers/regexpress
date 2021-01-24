@@ -1,40 +1,17 @@
-import { RegexData, RegexPlaceholders, RegexSettings } from './interfaces';
-import { AugmentedExp } from './augmentedExp';
+import { PatternData, PatternSettings } from '../pattern-data/interfaces';
 
 interface TemplateSpecification {
     buildTemplate(template: string) : string;
 }
 
 abstract class SpecificationBase {
-    constructor(protected data: RegexData, protected settings: RegexSettings) { }
-}
-
-class TemplateMaker {
-    private spec: TemplateSpecification;
-
-    constructor(spec: TemplateSpecification) {
-        this.spec = spec;
-    }
-
-    build(templates: string[], flags: string) : Array<AugmentedExp> {
-        const regexes: Array<AugmentedExp> = [];
-        for (let template of templates) {
-            const regexString = this.spec.buildTemplate(template);
-            const regex = this.buildRegex(regexString, flags, template);
-            regexes.push(regex);
-        }
-        return regexes;
-    }
-
-    private buildRegex(regexString: string, flags: string, template: string) : AugmentedExp {
-        return new AugmentedExp(regexString, flags, template);
-    }
+    constructor(protected data: PatternData, protected settings: PatternSettings) { }
 }
 
 class DefaultSpecification extends SpecificationBase implements TemplateSpecification {
-    private placeholders: RegexPlaceholders;
+    private placeholders: PatternData;
 
-    constructor(data: RegexData, settings: RegexSettings, placeholders?: RegexPlaceholders) {
+    constructor(data: PatternData, settings: PatternSettings, placeholders?: PatternData) {
         super(data, settings);
         this.placeholders = placeholders || {};
     }
@@ -52,7 +29,7 @@ class DefaultSpecification extends SpecificationBase implements TemplateSpecific
     }
 
     protected subPlaceholder(group: string) : string {
-        return group.replace(/~~(\w+)~~/, (match: string, p1: string) => {
+        return group.replace(/\{\{(\w+)\}\}/, (match: string, p1: string) => {
             if (!this.placeholders[p1]) {
                 throw new Error(`undefined placeholder ${match} in regex data`);
             }
@@ -61,8 +38,11 @@ class DefaultSpecification extends SpecificationBase implements TemplateSpecific
     }
 }
 
+
+
+
 class NoPlaceHolderSpecification extends SpecificationBase implements TemplateSpecification {
-    constructor(data: RegexData, settings: RegexSettings) {
+    constructor(data: PatternData, settings: PatternSettings) {
         super(data, settings); 
     }
 
@@ -80,7 +60,7 @@ class NoPlaceHolderSpecification extends SpecificationBase implements TemplateSp
 }
 
 class ExtraSettingSpecification extends SpecificationBase implements TemplateSpecification {
-    constructor(data: RegexData, settings: RegexSettings, placeholders?: RegexPlaceholders) {
+    constructor(data: PatternData, settings: PatternSettings, placeholders?: PatternData) {
         super(data, settings); 
     }
 
@@ -100,4 +80,5 @@ class ExtraSettingSpecification extends SpecificationBase implements TemplateSpe
     }
 }
 
-export { SpecificationBase, TemplateMaker, DefaultSpecification, TemplateSpecification, NoPlaceHolderSpecification, ExtraSettingSpecification }
+export type { TemplateSpecification }
+export { DefaultSpecification }

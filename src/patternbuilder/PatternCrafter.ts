@@ -1,30 +1,30 @@
-import { ExtendedRegExp } from './augmentedExp';
-import { DefaultSpecification, TemplateSpecification } from './templatebuilder';
-import { RegexNotationObject } from './renoBuilder'
+import { ExtendedRegExp } from '../extended-regexp/ExtendedRegExp';
+import { DefaultSpecification, TemplateSpecification } from '../template-spec/TemplateSpecification';
+import { Pattern } from './Pattern'
 
 class PatternCrafter {
-    craft(reno: RegexNotationObject): ExtendedRegExp[] {
-        if (typeof reno.settings.template === 'string') {
-            reno.settings.template = [reno.settings.template];
+    craft(pattern: Pattern): ExtendedRegExp[] {
+        if (typeof pattern.settings.template === 'string') {
+            pattern.settings.template = [pattern.settings.template];
         }
-
-        const tm = new PatternMaker(
-            new DefaultSpecification(reno.data, reno.settings, reno.placeholders));
-        const patterns = tm.build(reno.settings.template, reno.settings.flags);
+        
+        const tm = new PatternMaker(new DefaultSpecification(
+            pattern.data, pattern.settings, pattern.placeholders));
+        const patterns = tm.build(pattern.settings.template, pattern.settings.flags ?? '');
 
         if (patterns.length > 1) {
             let regexes = [];
             for (let pattern of patterns) {
-                let re = this.craftPattern(pattern);
+                let re = this.compilePattern(pattern);
                 regexes.push(re);
             }
             return regexes;
         }
      
-        return [this.craftPattern(patterns[0])];
+        return [this.compilePattern(patterns[0])];
     }
 
-    private craftPattern(pattern: ReObject): ExtendedRegExp {
+    private compilePattern(pattern: ReObject): ExtendedRegExp {
         return new ExtendedRegExp(pattern.regex, pattern.template);
     }
 }
@@ -45,6 +45,7 @@ class PatternMaker {
         const regexes: Array<ReObject> = [];
         for (let template of templates) {
             const regexString = this.spec.buildTemplate(template);
+            
             const regex = this.buildRegex(regexString, flags, template);
             regexes.push(regex);
         }
@@ -56,4 +57,5 @@ class PatternMaker {
     }
 }
 
-export { PatternCrafter, PatternMaker, ReObject }
+export { PatternCrafter }
+export type { ReObject }
