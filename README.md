@@ -1,150 +1,193 @@
-# RegExpress
-This package builds regex patterns from JavaScript objects using templates. 
+<!-- ![build](https://github.com/GJZwiers/regexbuilder-deno/workflows/Build/badge.svg) -->
 
-## Installation
-Make sure `npm` is installed, then change into your project directory and run `npm install regexpress`.
+This module provides two fluent builder APIs to make regex patterns. One is used for piecewise building of a RegExp, while the other is used to create extended regexes from user-defined string templates.
 
-The package runs without dependencies in Node v13.2.0+. In older versions you may need to run with the `--experimental-modules` flag or another package to handle ES6 modules.
+## RegexBuilder
+Start building with `Regex.new()`:
+```typescript
+import { Regex } from 'regexpress';
 
-## Import
-After installing import the module:
-```javascript
-import { Regexpress } from 'regexpress';
+Regex.new()
+    .add('foo')
+    .add('bar')
+    .build();       
+    
+    >> /foobar/
 ```
 
-## Initialization
-Create an instance of the Regexpress class after which you can use its functions:
-```javascript
-const rxp = new RegExpress();
+### Groups
+To add groups either use the specific method call or use the more generic `group` method where you provide the content and a group type:
+```typescript
+    .capture('foo');    >> /(foo)/
+```
+```typescript
+    .noncapture('bar');    >> /(?:bar)/
 ```
 
-## Basic Usage
-Declare an object with `template` and `flags` properties, then create an object for the actual pattern values stored under the same names as in the template:
-```javascript
-const settings = {
-    template: '(volume) (unit)',
-    flags: 'i'
+```typescript
+    .group('bar', 'ncg')    >> /(?:bar)/
+```
+
+Named groups should be made with `namedGroup`:
+```typescript
+.namedGroup('foo', 'bar');    >> /(?<foo>bar)/
+```
+
+### Nesting
+A nested structure in the pattern can be started by calling `nest` for a capture group or specific calls to nest a different group. Call `unnest` to finish a nested tier, or provide it with an integer to finish multiple tiers at once:
+```typescript
+    Regex.new()
+        .nest()
+        .add('foo')
+        .nestNonCapture()
+        .add('bar')
+        .unnest()   // or use .unnest(2)
+        .unnest()
+        .build()
+
+        >> /(foo(?:bar))/
+```
+This can be shortened by using composite calls such as `nestAdd` to combine `nest` and `add` in once call. If no group type is provided it will default to a capturing group, in other cases you need to provide the group type as the second argument. To nest a named group, use `nestNamed`.
+```typescript
+    Regex.new()
+        .nestAdd('foo')
+        .nestAdd('bar', 'ncg')
+        .unnest(2)
+        .build()
+
+        >> /(foo(?:bar))/
+```
+
+### Assertions
+```typescript
+    .lineStart()
+    .add('foo')
+    .lineEnd()  
+    
+    >> /^foo$/
+```
+```typescript
+    .startsWith('foo')  >> /^foo/
+```
+```typescript
+    .endsWith('bar')    >> /bar$/
+```
+
+```typescript
+    .add('foo')
+    .lookahead('bar')
+    // or
+    .followedBy('bar')
+
+    >> /foo(?=bar)/
+```
+
+### Alternates
+```typescript
+    .alts(['foo','bar','baz');
+    >> /foo|bar|bar/
+
+    .altGroup(['foo', 'bar', 'baz'], 'ncg')
+    >> /(?:foo|bar|baz)/
+```
+
+### Quantifiers
+```typescript
+    .add('foo')
+    .times(2)
+    >> /foo{2}/ // matches fooo
+
+    .between(2, 5)
+    >> /foo{2,5}/   // matches foo with 2 to 5 more o's
+
+    .atleast(2)
+    >> /foo{2,}/    // matches foo with 2 to any more o's
+
+    .zeroPlus()
+    >> /foo*/   // matches fo with 0 to any more o's
+
+    .onePlus()
+    >> /foo+/   // matches fo with 1 to any more o's
+```
+
+### Backreferences
+```typescript
+    .capture('foo')
+    .add('[: ]+')
+    .ref(1)
+
+    >> /(foo)[: ]+\1/
+```
+
+### Flags
+```typescript
+    .add('foo')
+    .flags('g')
+    >> /foo/g
+```
+
+## PatternBuilder
+is a methodology for building regexes according to templates and can be used to manage the complexity of handling lengthy patterns.
+
+Start building with `Pattern.new`:
+```typescript
+import { Pattern } from 'regexpress';
+
+let pattern = Pattern.new()
+    .settings({
+        template: '(greetings) (?=regions)',
+        flags: 'i'
+    })
+    .data({
+        greetings: [ 'hello', 'good morning', 'howdy' ],
+        regions: [ 'world', 'new york', '{{foo}}' ]
+    })
+    .placeholders({ foo: ['bar'] })
+    .build();
+
+    >> /(hello|good morning|howdy) (?=world|new york|bar)/
+```
+
+### Templates
+give a name to any arbitrary part of a pattern, whether they are inside a capture group or not. Any word in the template will be substituted with the values of the corresponding key in the data. Any array in the data will be joined with pipe `|` symbols to create alternates.
+```typescript
+.settings({
+    template: 'field_names[: ]+(field_values)'
+})
+.data({
+    field_names: ['Product Volume', 'volume']
+    field_values: [ '100ml', '5L', '\\d{1,4}[cml]']
+})
+```
+
+### Placeholders
+Declare a set of placeholder substitutes to reuse them in multiple patterns. Add placeholders to the data with double curly braces: `{{placeholder}}`
+```typescript
+const ph = {
+    foo: ['bar', 'baz'],    // changes {{foo}} in any key in the data to bar|baz
 };
 
-const regexData = {
-    volume: String.Raw`\d{1,4}`,
-    unit: ['ml', 'cl', 'L']
-};
-
-const regex = rxp.build(regexData, settings);
+Pattern.new()
+    // .. settings, data
+    .placeholders(ph)
 ```
 
-
-The above objects build the pattern `/(\d{1,4}) (ml|cl|l)/i` in the following steps:  
-1. Replace the template names with the right values:
-```javascript
-'(volume) (unit)' -> '(\\d{1,4}) (unit)'
-'(\\d{1,4}) (unit)' -> '(\\d{1,4}) (ml|cl|l)'
+### Exceptions
+Exclude values you know you don't want in your match results. Note that this will restructure your template as `exclude|({the-rest-of-the-template})` and _place any desired full match in capture group 1_ while adding exclusions to group 0.
+```typescript
+Pattern.new()
+    .settings({ template: 'years'})
+    .data({ years: String.raw`20\d{2}` })
+    .except("2000")
 ```
-2. Compile the string to regex: `'(\\d{1,4}) (ml|cl|l)' -> /(\d{1,4})(ml|cl|l)/i`
+The pattern above will build to `/2000|(20\d{2})/`.
 
-
-You can also declare a list of templates. This can be helpful to match data that comes in a high variety of different notations with similar meaning. Suppose you want to match volume data which can come as either a single value (100), a min-max range (10-100) or a limit value (<100). With RegExpress you can declare a template for each of these:
-
- ```javascript
-    const settings = {
-            template: [
-            '(volume) (unit)[- ]+(volume) (unit)',  // Range
-            '[>< ]+(volume) (unit)',                // Limit
-            '(volume) (unit)',                      // Single
-            ],
-            flags: 'i'
-    };
-
-    const regexData = {
-        volume: '\\d{1,4}',
-        unit: ['ml', 'cl', 'l'],
-    };
-
-    const regexes = rxp.build(regexData, settings);
-    /* 
-    Will build array of patterns: [
-        /(\d{1,4})(ml|cl|l)[- ]+(\d{1,4})(ml|cl|l)/i,
-        /[>< ]+(\d{1,4})(ml|cl|l)/i,
-        /(\d{1,4})(ml|cl|l)/i 
-    ] 
-    */
+### Wildcards
+Add a wildcard to be searched for after a set of known values. Note that this will restructure your template as `{the-rest-of-the-template}|(wildcard)`, adding a capture group but not changing the order of existing ones.
+```typescript
+Pattern.new()
+    .settings({ template: 'years'})
+    .data({ years: ['2018', '2019', '2020'] })
+    .wildcard(String.raw`20\d{2}\b`)
 ```
-
-## Mapping Matches
-Patterns built with RegExpress contains their template as a property and can be used to map any match results to an object, containing the template names as keys:
-
-```javascript
-// regex: /(\d{1,4}) (ml|cl|l)/i, template: '(volume) (unit)'
-const volumeData = '100 ml';
-
-const matches = volumeData.match(regex);
-// matches: [ '100 ml', '100', 'ml']
-
-const map = rxp.mapTemplate(matches, regex.getTemplate()); 
-// map: { fullMatch: '100 ml', volume: '100', unit: 'ml' }
-```
-
-## Placeholders
-To reuse template values in a number of patterns you can store them in a special object and add placeholders at the places you want them to be inserted in any pattern.
-
-The example below reuses components for `day`, `month` and `year` in both an expiry date as well as a calendar date:
-
- ```javascript
-    const subs = {
-        day: '[0-3][0-9]',
-        month:  ['jan','feb','mar','apr','may','jun',
-                'jul','aug','sep','okt','nov','dec'],
-        year: '(?:19|20)\\d{2}'
-    }
-    
-    const productExpirationDate = {
-        expire_statement: ['best before', 'best quality up until', 'use before'],
-        day: '~~day~~',
-        month: '~~month~~',
-        year: '~~year~~'
-    }
-    
-    const ExpirationDateSettings = {
-        template: '(?:expire_statement): (day)-(month)-(year)',
-        flags: ''
-    }
-    
-    const calendarDate = {
-        day: '~~day~~',
-        month: '~~month~~',
-        year: '~~year~~'
-    }
-    
-    const calendarDateSettings = {
-        template: [
-        '(day)-(month)-(year)',
-        '(month)-(day)-(year)'
-        ],
-        flags: ''
-    }
-```
-
-## Settings
-Defining a custom separator is possible by adding a `separator` key to the settings:
-
-```javascript
-const settings = {
-    template: 'keywords',
-    separator: '.+'
-};
-
-const regexData = {
-    keywords: ['one', 'two', 'three']
-};
-
-const regex = rxp.build(regexData, settings); -> /one.+two.+three/
-```
-
-It is possible to sort the arrays with the regex values, analyzing the maximum length of the string they might match and sorting the alternates in ascending order. This is experimental and only works when using the `|` as separator:
-```javascript
-const settings = {
-    template: 'keywords',
-    autosort: true
-}
-```
+The pattern above will build to `/2018|2019|2020|(20\d{2}\b)/`. Any matched wildcard year will be placed in group 1.
