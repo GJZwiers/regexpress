@@ -1,6 +1,6 @@
 {
   "name": "regexpress",
-  "version": "3.1.6",
+  "version": "4.0.0",
   "description": "Build regex patterns from JavaScript objects using templates",
   "type": "module",
   "main": "./dist/index.js",
