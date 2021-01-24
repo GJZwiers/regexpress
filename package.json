@@ -1,12 +1,15 @@
 {
   "name": "regexpress",
   "version": "3.1.6",
-  "description": "Regular Expression Notation Objects",
+  "description": "Build regex patterns from JavaScript objects using templates",
+  "type": "module",
   "main": "dist/index.js",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "prepublish": "tsc",
   "scripts": {
-    "test": "mocha --reporter spec --require esm --require ts-node/register test/**/*.test.ts"
+    "test": "mocha --reporter spec --require esm --require ts-node/register src/**/*.test.ts",
+    "gen": "tsc && node fileExtensions.js"
   },
   "repository": {
     "type": "git",
@@ -24,15 +27,16 @@
     "url": "https://github.com/GJZwiers/regex-notation-object/issues"
   },
   "homepage": "https://github.com/GJZwiers/regex-notation-object#readme",
-  "type": "module",
   "dependencies": {},
   "devDependencies": {
     "@types/chai": "^4.2.12",
+    "@types/jasmine": "^3.6.3",
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.12.54",
     "chai": "^4.2.0",
     "esm": "^3.2.25",
     "filehound": "^1.17.4",
+    "jasmine": "^3.6.4",
     "mocha": "^8.1.1",
     "rewire": "^4.0.1",
     "ts-node": "^8.10.2",
