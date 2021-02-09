@@ -1,5 +1,5 @@
 import { PatternSettings, PatternData } from "../pattern-data/interfaces";
-import { PatternCrafter } from "./PatternCrafter";
+import { PatternCrafter } from "./patterncrafter";
 import { ExtendedRegExp } from "../extended-regexp/extended_regexp";
 import { TemplateSpecification, DefaultSpecification, SpecificationData } from "../template-spec/template_specification";
 import { applyMixins } from '../utils/mixin';
