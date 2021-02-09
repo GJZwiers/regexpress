@@ -29,7 +29,7 @@ This module provides two fluent builder interfaces to make regex patterns. Regex
 ## RegexBuilder
 Start building with `Regex.new()`:
 ```typescript
-import { Regex } from 'https://deno.land/x/regexbuilder/mod.ts';
+import { Regex } from 'regexpress';
 
 Regex.new()
     .add('foo')
@@ -231,7 +231,7 @@ is a methodology for building regexes according to templates and can be used to 
 
 Start building with `Pattern.new`:
 ```typescript
-import { Pattern } from 'https://deno.land/x/regexbuilder/mod.ts';
+import { Pattern } from 'regexpress';
 
 let pattern = Pattern.new()
     .settings({
