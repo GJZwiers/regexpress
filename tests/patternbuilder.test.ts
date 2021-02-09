@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { Pattern } from '../src/patternbuilder/Pattern'
+import { Pattern } from '../src/patternbuilder/pattern'
 import { ExtendedRegExp } from '../src/extended-regexp/extended_regexp';
 
 describe('PatternBuilder', () => {
