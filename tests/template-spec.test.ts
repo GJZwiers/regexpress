@@ -1,30 +1,38 @@
 import { expect } from 'chai';
-import { DefaultSpecification } from "../src/template-spec/TemplateSpecification";
+import { DefaultSpecification } from "../src/template-spec/template_specification";
 
 describe("DefaultSpecification", () => {
     it("should build a template from data correctly", () => {
-        let mockData = { foo: 'bar' };
-        let mockSettings = { template: 'foo' };
-        let spec = new DefaultSpecification(mockData, mockSettings);
-        expect(spec.buildTemplate(mockSettings.template)).to.equal('bar');
+        const specdata = {
+            settings: { template: 'foo' },
+            vars: { foo: 'bar' }
+        }
+        const spec = new DefaultSpecification(specdata);
+        expect(spec.compose(specdata.settings.template)).to.equal('bar');
     });
     it("should join arrays correctly", () => {
-        let mockData = { foo: ['bar', 'baz'] };
-        let mockSettings = { template: 'foo' };
-        expect(new DefaultSpecification(mockData, mockSettings)
-            .buildTemplate(mockSettings.template)).to.equal('bar|baz');
+        const specdata = {
+            settings: { template: 'foo' },
+            vars: { foo: ['bar', 'baz'] }
+        }
+        expect(new DefaultSpecification(specdata)
+        .compose(specdata.settings.template)).to.equal('bar|baz');
     });
     it("should substitute placeholders correctly", () => {
-        let mockData = { foo: ['{{bar}}', 'baz'] };
-        let mockSettings = { template: 'foo' };
-        let mockPlaceholders = { bar: [ 'bar']}
-        expect(new DefaultSpecification(mockData, mockSettings, mockPlaceholders)
-            .buildTemplate(mockSettings.template)).to.equal('bar|baz');
+        const specdata = {
+            settings: { template: 'foo' },
+            vars: { foo: ['{{bar}}', 'baz'] },
+            placeholders: { bar: [ 'bar']}
+        }
+        expect(new DefaultSpecification(specdata)
+        .compose(specdata.settings.template)).to.equal('bar|baz');
     });
     it("should handle a custom separator correctly", () => {
-        let mockData = { foo: ['bar', 'baz'] };
-        let mockSettings = { template: 'foo', separator: '[: ]+' };
-        expect(new DefaultSpecification(mockData, mockSettings)
-            .buildTemplate(mockSettings.template)).to.equal('bar[: ]+baz');
+        const specdata = {
+            settings: { template: 'foo', separator: '[: ]+' },
+            vars: { foo: ['bar', 'baz'] }
+        }
+        expect(new DefaultSpecification(specdata)
+        .compose(specdata.settings.template)).to.equal('bar[: ]+baz');
     });
 });

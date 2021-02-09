@@ -1,3 +1,3 @@
-export { Regex } from './regexbuilder/RegexBuilder';
+export { Regex } from './regexbuilder/regex';
 export { Pattern } from './patternbuilder/Pattern';
-export * from './extended-regexp/ExtendedRegExp';
+export * from './extended-regexp/extended_regexp';

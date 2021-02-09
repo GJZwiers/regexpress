@@ -1,28 +1,29 @@
 import { expect } from 'chai';
 import { Pattern } from '../src/patternbuilder/Pattern'
-import { ExtendedRegExp } from '../src/extended-regexp/ExtendedRegExp';
+import { ExtendedRegExp } from '../src/extended-regexp/extended_regexp';
 
 describe('PatternBuilder', () => {
     it("should build a pattern from template and data correctly", () => {
-        let pattern = Pattern.new().settings({ template: 'foo' }).data({foo: 'bar'}).build();
-        expect(pattern).to.eql([new ExtendedRegExp(/bar/, 'foo')]);
-        expect(pattern[0].test('bar')).to.equal(true);
+        let pattern = Pattern.new().settings({ template: 'foo' }).vars({foo: 'bar'}).build();
+        expect(pattern).to.eql(new ExtendedRegExp(/bar/, 'foo', false));
+        expect(pattern.test('bar')).to.equal(true);
     });
     it("should add an exception group correctly", () => {
         let pattern = Pattern.new()
         .settings({template: 'foo'})
-        .data({foo: 'bar'})
-        .except(['baz'])
-        .build()
+        .vars({foo: 'bar'})
+        .filter(['baz'])
+        .build();
     
-        expect(pattern).to.eql([new ExtendedRegExp(/baz|(bar)/, 'exclude|(foo)')]);
+        expect(pattern).to.eql(new ExtendedRegExp(/baz|(bar)/, 'filter|(foo)', false));
     });
     it("should add a wildcard group correctly", () => {
         let pattern = Pattern.new()
         .settings({template: 'foo'})
-        .data({foo: 'bar'})
+        .vars({foo: 'bar'})
         .wildcard('b.*')
-        .build()
-        expect(pattern).to.eql([new ExtendedRegExp(/bar|(b.*)/, 'foo|(wildcard)')]);
+        .build();
+
+        expect(pattern).to.eql(new ExtendedRegExp(/bar|(b.*)/, 'foo|(wildcard)', false));
     });  
 });

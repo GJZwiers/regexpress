@@ -1,18 +1,28 @@
-interface PatternData {
-    [key: string]: string[] | string
+interface PatternSettingsBase {
+    template: string | string[]
+    flags?: string
 }
 
-interface PatternSettingsBase {
-    template: string[] | string
-    flags?: string
+type TemplateVarSymbol = '%' | '#' | '!' | '@';
+
+interface Symbol {
+    symbol?: TemplateVarSymbol
+}
+
+interface Maps {
+    map?: boolean
 }
 
 interface CustomSetting {
     [key: string]: any
 }
 
-interface PatternSettings extends PatternSettingsBase, CustomSetting {
+interface PatternSettings extends PatternSettingsBase, Symbol, Maps, CustomSetting {
     separator?: string
 }
 
-export type { PatternData, PatternSettings }
+interface PatternData {
+    [key: string]: string | string[]
+}
+
+export type { PatternSettingsBase, TemplateVarSymbol, PatternSettings, CustomSetting, PatternData }
