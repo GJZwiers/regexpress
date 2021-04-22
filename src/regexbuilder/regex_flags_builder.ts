@@ -36,4 +36,9 @@ export class RegexFlagsBuilder extends RegexBuilderBase {
         this.regex.flags += 'y';
         return this;
     }
+    /** @experimental Adds the 'd' flag to the regex. (requires Node v16)*/
+    indices(): this {
+        this.regex.flags += 'd';
+        return this;
+    }
 }

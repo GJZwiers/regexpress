@@ -18,6 +18,11 @@ export class ExtendedRegExp {
     get flags(): string {
         return this.pattern.flags;
     }
+    /** @experimental Node v16 feature */
+    get hasIndices(): boolean {
+        // @ts-ignore
+        return this.pattern.hasIndices;
+    }
 
     get global(): boolean {
         return this.pattern.global;
