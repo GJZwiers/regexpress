@@ -4,12 +4,13 @@
   "description": "Build regexes from templates with a fluent API.",
   "type": "module",
   "main": "./dist/index.js",
+  "exports": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "prepublish": "tsc",
   "scripts": {
     "test": "mocha --require esm --require ts-node/register tests/**/*.test.ts",
-    "gen": "tsc && node fileExtensions.js"
+    "build": "tsc && node fileExtensions.js"
   },
   "repository": {
     "type": "git",
