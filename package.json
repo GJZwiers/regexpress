@@ -1,6 +1,6 @@
 {
   "name": "regexpress",
-  "version": "4.2.0",
+  "version": "4.2.1",
   "description": "Build regexes from templates with a fluent API.",
   "type": "module",
   "main": "./dist/index.js",
