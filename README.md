@@ -2,7 +2,11 @@
 
 This module provides two fluent builder interfaces to make regex patterns. RegexBuilder is used for piecewise building of a RegExp, while PatternBuilder is used to create extended regexes from string templates defined by the user.
 
+This package is also available on [Deno](https://deno.land/x/regexbuilder).
+
 # Table of Contents
+- [Importing](#importing)
+- [TypeScript](#typescript)
 - [RegexBuilder](#regexbuilder)  
    * [Groups](#groups)  
    * [Nesting](#nesting)  
@@ -25,6 +29,28 @@ This module provides two fluent builder interfaces to make regex patterns. Regex
    * [Custom Separator Symbol](#custom-separator) 
 
 ---
+
+## Importing
+
+This package is an ES Module and can be imported in Node by setting `"type: "module"` in `package.json`. It can then be imported using named imports. There are 3 main components that can be imported:
+```typescript
+import { Regex, Pattern, ExtendedRegExp } from 'regexpress';
+```
+Alternatively all components can be imported as one object with:
+```typescript
+import * as regexpress from 'regexpress';
+// regexpress.Regex
+```
+
+Loading the module in a CommonJS module is possible with a dynamic import in certain setups:
+```typescript
+async function main() {
+    const regexpress = await import('regexpress');
+}
+```
+
+## TypeScript
+To use the module in a TypeScript project it is important to set `"module":` to `"ES2015"` or higher in `tsconfig.json` when compiling with `tsc`.
 
 ## RegexBuilder
 Start building with `Regex.new()`:
