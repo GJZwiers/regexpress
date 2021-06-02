@@ -1,7 +1,3 @@
 /node_modules
 /dist
-obs/
-RegexBuilder.php
-RegexBuilderTest.php
 .gitignore
-keepcode.txt
