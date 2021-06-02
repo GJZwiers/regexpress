@@ -6,7 +6,7 @@ This package is also available on [Deno](https://deno.land/x/regexbuilder).
 
 # Table of Contents
 - [Importing](#importing)
-- [TypeScript](#typescript)
+- [TypeScript Config](#typescript-config)
 - [RegexBuilder](#regexbuilder)  
    * [Groups](#groups)  
    * [Nesting](#nesting)  
@@ -31,26 +31,29 @@ This package is also available on [Deno](https://deno.land/x/regexbuilder).
 ---
 
 ## Importing
+`Regexpress` is an ES Module which can be used in Node v12 and higher. To run ES Modules in Node you can 
+- set `"type: "module"` in `package.json` or
+- give your file an `.mjs` extension
 
-This package is an ES Module and can be imported in Node by setting `"type: "module"` in `package.json`. It can then be imported using named imports. There are 3 main components that can be imported:
+ The module can be imported using named imports. There are 3 components that can be imported:
 ```typescript
 import { Regex, Pattern, ExtendedRegExp } from 'regexpress';
 ```
-Alternatively all components can be imported as one object with:
+Alternatively all components can be imported together with:
 ```typescript
 import * as regexpress from 'regexpress';
-// regexpress.Regex
+// regexpress.Pattern
 ```
 
-Loading the module in a CommonJS module is possible with a dynamic import in certain setups:
+Loading the module in a CommonJS setup is possible with a dynamic import in certain setups:
 ```typescript
 async function main() {
     const regexpress = await import('regexpress');
 }
 ```
 
-## TypeScript
-To use the module in a TypeScript project it is important to set `"module":` to `"ES2015"` or higher in `tsconfig.json` when compiling with `tsc`.
+## TypeScript Config
+In order to use this module in a TypeScript project it is recommended to set `module` and `target` to `ES2015/ES6` or higher in `tsconfig.json` when compiling with `tsc`. if you set `target` to `ES5` include `"lib": ["ES2015", "ES2020.String"]` as well.
 
 ## RegexBuilder
 Start building with `Regex.new()`:
