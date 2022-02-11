@@ -29,11 +29,11 @@
   },
   "homepage": "https://github.com/GJZwiers/regexpress#readme",
   "devDependencies": {
-    "@types/node": "^15.14.9",
-    "filehound": "^1.17.4",
+    "@types/node": "^16.11.7",
+    "filehound": "^1.17.5",
     "jest": "^27.5.1",
     "ts-jest": "^27.1.3",
-    "typescript": "^4.2.4"
+    "typescript": "^4.5.5"
   },
   "files": [
     "/dist",
