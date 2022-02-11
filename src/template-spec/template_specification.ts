@@ -61,7 +61,7 @@ class DefaultSpecification extends SpecificationBase implements TemplateSpecific
     protected subPlaceholder(group: string): string { 
         return group.replace(/(?<!\\)\{\{(\w+)\}\}/g, (match: string, name: string) => {
             if (!this.data.placeholders[name]) {
-                console.warn(`(regexbuilder) Warning: undefined placeholder \"${name}\" in regex data`);
+                console.warn(`(regexbuilder) Warning: undefined placeholder "${name}" in regex data`);
                 return match;
             }
             return this.buildVar(this.data.placeholders[name]);

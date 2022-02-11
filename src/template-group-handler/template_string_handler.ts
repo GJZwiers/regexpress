@@ -26,15 +26,15 @@ abstract class TemplateStringHandler {
         else return '>';
     }
 
-    protected extractTemplateGroups(index: number = 0): void {
+    protected extractTemplateGroups(index = 0): void {
         let template = (typeof this.template === 'string') ? this.template : this.template[index];
 
         for (let i = 0; i < template.length; i++) {
             if (template[i] === this.openingBracket) {
                 this.brackets.push({bracket: template[i], index: i});
             } else if (template[i] === this.closingBracketType()) {
-                let lastOpener: BracketPosition = this.brackets[this.brackets.length - 1];
-                let nestedUnit: string = template.slice(lastOpener.index, i + 1);
+                const lastOpener: BracketPosition = this.brackets[this.brackets.length - 1];
+                const nestedUnit: string = template.slice(lastOpener.index, i + 1);
                 template = this.removeNestedUnit(nestedUnit, template);
                 i -= nestedUnit.length;
                 this.brackets.pop();
