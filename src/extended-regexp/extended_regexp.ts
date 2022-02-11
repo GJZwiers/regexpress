@@ -118,10 +118,10 @@ export class ExtendedRegExp {
         const map: RegExpMatchMap = { full_match: matches[0] };
         const groupNames = new TemplateBracketHandler(this.template, '(').handleBrackets();
         if (/\bfilter\b/.test(this.template)) {
-            throw new Error(`(regexbuilder) Error mapping template: Cannot map unnamed capturing group added with \"filter\" method. Please use
+            throw new Error(`(regexbuilder) Error mapping template: Cannot map unnamed capturing group added with "filter" method. Please use
              the indexes of the matches array instead when using a filter (valid matches in index 1, exceptions only in index 0).`);
         }
-        for (let [i, name] of groupNames.entries()) {
+        for (const [i, name] of groupNames.entries()) {
             map[name] = matches[i + 1];
         }
         return map;

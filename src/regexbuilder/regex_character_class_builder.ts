@@ -153,7 +153,7 @@ export class RegexCharacterClassBuilder extends RegexBuilderBase {
         if (!/^[0-9A-F]{4,5}$/.test(hhhh)) {
             throw new Error("(regexbuilder) Error: attempt to add invalid hexadecimal characters");
         }
-        this.regex.parts.push(`${charClasses.unicode}\{${hhhh}\}`);
+        this.regex.parts.push(`${charClasses.unicode}{${hhhh}}`);
 		return this;
     }
 
