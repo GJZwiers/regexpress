@@ -6,6 +6,7 @@ jobs:
     steps:
       - checkout
       - run: npm install
+      - run: npx eslint src/
       - run: npm test
 workflows:
   version: 2
