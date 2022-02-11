@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect, describe, it } from '@jest/globals';
 import { DefaultSpecification } from "../src/template-spec/template_specification";
 
 describe("DefaultSpecification", () => {
@@ -8,7 +8,7 @@ describe("DefaultSpecification", () => {
             vars: { foo: 'bar' }
         }
         const spec = new DefaultSpecification(specdata);
-        expect(spec.compose(specdata.settings.template)).to.equal('bar');
+        expect(spec.compose(specdata.settings.template)).toEqual('bar');
     });
     it("should join arrays correctly", () => {
         const specdata = {
@@ -16,7 +16,7 @@ describe("DefaultSpecification", () => {
             vars: { foo: ['bar', 'baz'] }
         }
         expect(new DefaultSpecification(specdata)
-        .compose(specdata.settings.template)).to.equal('bar|baz');
+        .compose(specdata.settings.template)).toEqual('bar|baz');
     });
     it("should substitute placeholders correctly", () => {
         const specdata = {
@@ -25,7 +25,7 @@ describe("DefaultSpecification", () => {
             placeholders: { bar: [ 'bar']}
         }
         expect(new DefaultSpecification(specdata)
-        .compose(specdata.settings.template)).to.equal('bar|baz');
+        .compose(specdata.settings.template)).toEqual('bar|baz');
     });
     it("should handle a custom separator correctly", () => {
         const specdata = {
@@ -33,6 +33,6 @@ describe("DefaultSpecification", () => {
             vars: { foo: ['bar', 'baz'] }
         }
         expect(new DefaultSpecification(specdata)
-        .compose(specdata.settings.template)).to.equal('bar[: ]+baz');
+        .compose(specdata.settings.template)).toEqual('bar[: ]+baz');
     });
 });
