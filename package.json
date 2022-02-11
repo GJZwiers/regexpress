@@ -10,6 +10,7 @@
   "prepublish": "tsc",
   "scripts": {
     "build": "tsc && node fileExtensions.js",
+    "lint": "eslint src/",
     "test": "jest"
   },
   "repository": {
